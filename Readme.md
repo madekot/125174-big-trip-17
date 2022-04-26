@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Михаил Голубцов](https://up.htmlacademy.ru/ecmascript/17/user/125174).
-* Наставник: `Неизвестно`.
+* Наставник: [Николай Котиков](https://htmlacademy.ru/profile/niklcat).
 
 ---
 
