@@ -1,5 +1,5 @@
 import RoutePointView from '../view/route-point-view';
-import EditingFormView from '../view/editing-form-view';
+import FormEditView from '../view/form-edit-view';
 import TripListView from '../view/trip-list-view';
 import SortingView from '../view/sorting-view';
 
@@ -13,7 +13,7 @@ export default class TripsPresenter {
 
     render(new SortingView(), this.container);
     render(this.tripListComponent, this.container);
-    render(new EditingFormView(), this.tripListComponent.getElement());
+    render(new FormEditView(), this.tripListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
       render(new RoutePointView(), this.tripListComponent.getElement());
