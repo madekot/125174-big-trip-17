@@ -1,13 +1,23 @@
-import {getRandomValue, makeQounter} from '../utils.js';
+import {
+  getRandomInteger,
+  getRandomValue,
+  makeCounter,
+} from '../utils.js';
 
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const COUNT_OFFERS = 3;
+const MIN_PRICE = 100;
+const MAX_PRICE = 9999;
+const COUNT_OFFERS = 2;
 
 const getType = () => getRandomValue(TYPES);
 
 const generateDestination = () => {
-  const descriptions = ['Chamonix, is a beautiful city, a true asian pearl, with crowded streets.'];
-  const names = ['Chamonix'];
+  const descriptions = [
+    'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    'Aliquam id orci ut lectus varius viverra.'
+  ];
+  const names = ['Chamonix', 'Abidjan', 'Dakar'];
   const pictures = [
     {
       src: 'http://picsum.photos/300/200?r=0.0762563005163317',
@@ -24,10 +34,9 @@ const generateDestination = () => {
 
 const generateOffer = () => {
   const prices = [60, 120, 180];
-  const titles = ['Upgrade to a business class', 'Choose the radio station'];
-  const type = getType();
+  const titles = ['Upgrade to a business class', 'Choose the radio station', 'Divan'];
 
-  const getIdQounter = makeQounter();
+  const getIdQounter = makeCounter();
 
   const getOffer = () => (
     {
@@ -38,11 +47,10 @@ const generateOffer = () => {
   );
 
   const getOffers = (countOffers) => Array.from({length: countOffers}, getOffer);
-  const offers = getOffers(COUNT_OFFERS);
 
   return ({
-    type,
-    offers,
+    type: getType(),
+    offers: getOffers(COUNT_OFFERS),
   });
 };
 
@@ -51,7 +59,7 @@ const generateOffer = () => {
 //   const offers = generateOffer();
 //   const type = getType();
 
-//   const getIdPoint = makeQounter();
+//   const getIdPoint = makeCounter();
 //   const id = getIdPoint().toString();
 
 //   return ({
@@ -72,7 +80,7 @@ const generatePointLocal = () => {
   const type = getType();
 
   return ({
-    basePrice: 222,
+    basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
     dateFrom: '2019-07-10T22:55:56.845Z',
     dateTo: '2019-07-11T11:22:13.375Z',
     destination,

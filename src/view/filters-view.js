@@ -1,21 +1,26 @@
 import {createElement} from '../render';
+import {textTransformCapitalize} from '../utils';
 
-const createFilter = () => (
+const createFilterItem = (filter) => {
+  const name = filter || 'everything';
+  const label = filter ? textTransformCapitalize(filter) : 'Everything';
+
+  return (
+    `<div class="trip-filters__filter">
+      <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}">
+      <label class="trip-filters__filter-label" for="filter-${name}">${label}</label>
+    </div>`
+  );
+};
+
+const filterNames = ['everything', 'future', 'past'];
+const createFilterList = (filters) => filters.map((filter) => createFilterItem(filter)).join('');
+const filterList = createFilterList(filterNames);
+
+const createFilters = () => (
   `<form class="trip-filters" action="#" method="get">
-    <div class="trip-filters__filter">
-      <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
-      <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-    </div>
 
-    <div class="trip-filters__filter">
-      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-      <label class="trip-filters__filter-label" for="filter-future">Future</label>
-    </div>
-
-    <div class="trip-filters__filter">
-      <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" checked>
-      <label class="trip-filters__filter-label" for="filter-past">Past</label>
-    </div>
+    ${filterList}
 
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`
@@ -23,7 +28,7 @@ const createFilter = () => (
 
 export default class FilterView {
   getTemplate() {
-    return createFilter();
+    return createFilters();
   }
 
   getElement() {

@@ -1,7 +1,7 @@
-import RoutePointView from '../view/route-point-view';
 import FormEditView from '../view/form-edit-view';
-import TripListView from '../view/trip-list-view';
+import RoutePointView from '../view/route-point-view';
 import SortingView from '../view/sorting-view';
+import TripListView from '../view/trip-list-view';
 
 import {render} from '../render';
 

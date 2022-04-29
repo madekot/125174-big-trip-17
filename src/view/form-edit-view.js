@@ -1,127 +1,87 @@
 import {createElement} from '../render';
-import {getDateFrom, getDateTo} from '../utils';
+import {
+  getDateFrom,
+  getDateTo,
+  getTextFinalSay,
+  makeCounter,
+  textTransformCapitalize,
+} from '../utils';
 
-const createEventTypeItems = () => (
-  `<div class="event__type-item">
-    <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-    <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-  </div>
+const createEventTypeItem = (type = {}) => {
+  const checked  = type.checked ? 'checked' : '';
+  const label = textTransformCapitalize(type.name);
+  const name = type.name || 'taxi';
 
-  <div class="event__type-item">
-    <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-    <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-  </div>
+  return (
+    `<div class="event__type-item">
+      <input id="event-type-${name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}" ${checked}>
+      <label class="event__type-label  event__type-label--${name}" for="event-type-${name}-1">${label}</label>
+    </div>`
+  );
+};
 
-  <div class="event__type-item">
-    <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-    <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-  </div>
+const createEventTypes = (data) => {
+  const dataDefault = [
+    {name: 'taxi'},
+    {name: 'train'},
+    {name: 'ship'},
+    {name: 'drive'},
+    {name: 'flight', checked: true},
+    {name: 'check-in'},
+    {name: 'sightseeing'},
+    {name: 'restaurant'},
+  ];
 
-  <div class="event__type-item">
-    <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-    <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-  </div>
+  data = data || dataDefault;
 
-  <div class="event__type-item">
-    <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-    <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-  </div>
+  return data.map((idx) => createEventTypeItem(idx)).join('');
+};
 
-  <div class="event__type-item">
-    <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-    <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-  </div>
+const createOfferSelectorItem = (offer = {}) => {
+  const checked = offer.checked ? 'checked' : '';
+  const id = offer.id || '0';
+  const name = getTextFinalSay(offer.title);
+  const price = offer.price || 50;
+  const title = offer.title || 'Add luggage';
 
-  <div class="event__type-item">
-    <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-    <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-  </div>
+  return (
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-1${id}" type="checkbox" name="${name}" ${checked}>
+      <label class="event__offer-label" for="event-offer-${name}-1${id}">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`
+  );
+};
 
-  <div class="event__type-item">
-    <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-    <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-  </div>
+const createOfferSelectors = (data) => {
+  const getId = makeCounter();
 
-  <div class="event__type-item">
-    <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-    <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-  </div>`
-);
+  const dataDefault = [
+    {price: 50, title: 'Add luggage', checked: true},
+    {price: 80, title: 'Switch to comfort', checked: true},
+    {price: 15, title: 'Add meal'},
+    {price: 5, title: 'Choose seats'},
+    {price: 40, title: 'Travel by train'},
+  ];
 
-const createSelectors = () => (
-  `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-    <label class="event__offer-label" for="event-offer-luggage-1">
-      <span class="event__offer-title">Add luggage</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">50</span>
-    </label>
-  </div>
+  data = data || dataDefault;
 
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-    <label class="event__offer-label" for="event-offer-comfort-1">
-      <span class="event__offer-title">Switch to comfort</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">80</span>
-    </label>
-  </div>
-
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-    <label class="event__offer-label" for="event-offer-meal-1">
-      <span class="event__offer-title">Add meal</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">15</span>
-    </label>
-  </div>
-
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-    <label class="event__offer-label" for="event-offer-seats-1">
-      <span class="event__offer-title">Choose seats</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">5</span>
-    </label>
-  </div>
-
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-    <label class="event__offer-label" for="event-offer-train-1">
-      <span class="event__offer-title">Travel by train</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">40</span>
-    </label>
-  </div>`
-);
-
-// const createOfferItemEditForm = (offer = {}) => { // на будущее
-//   const price = offer.price || 50;
-//   const title = offer.title || 'Add luggage';
-//   const checked = offer.checked ? 'checked' : '';
-//   const eventName = offer.eventName ? offer.eventName : 'luggage';
-
-//   return (
-//     `<div class="event__offer-selector">
-//       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventName}-1" type="checkbox" name="${eventName}" ${checked}>
-//       <label class="event__offer-label" for="${eventName}-1">
-//         <span class="event__offer-title">${title}</span>
-//         &plus;&euro;&nbsp;
-//         <span class="event__offer-price">${price}</span>
-//       </label>
-//     </div>`
-//   );
-// };
+  return data.map((idx) => createOfferSelectorItem({...idx, id: getId()})).join('');
+};
 
 const createEditForm = (point = {}) => {
   const basePrice = point.basePrice || 0;
-  const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
-  const destinationName = point.destination?.name || 'destination';
-  const offersType = point.offers?.type || 'offers';
   const dateFrom = getDateFrom(point.dateFrom);
   const dateTo = getDateTo(point.dateTo);
-  const selectors = createSelectors();
-  const eventTypeItems = createEventTypeItems();
+  const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
+  const destinationName = point.destination?.name || 'destination';
+  const eventTypeItems = createEventTypes();
+  const offerSelectors = createOfferSelectors(point.offers?.offers);
+  const offersLabel = point.offers?.type || 'flight';
+  const typeIcon = point.offers?.type || 'flight';
 
   return(
     `<li class="trip-events__item">
@@ -130,23 +90,27 @@ const createEditForm = (point = {}) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${typeIcon}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
+
                 ${eventTypeItems}
+
               </fieldset>
             </div>
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight
+
+              ${offersLabel}
+
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -178,15 +142,17 @@ const createEditForm = (point = {}) => {
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">${offersType}</h3>
+            <h3 class="event__section-title  event__section-title--offers">offers</h3>
 
             <div class="event__available-offers">
-              ${selectors}
+
+              ${offerSelectors}
+
             </div>
           </section>
 
           <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">${destinationName}</h3>
+            <h3 class="event__section-title  event__section-title--destination">destination</h3>
             <p class="event__destination-description">${destinationDescription}</p>
           </section>
         </section>
