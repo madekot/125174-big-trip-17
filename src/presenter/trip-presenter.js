@@ -8,15 +8,17 @@ import {render} from '../render';
 export default class TripsPresenter {
   tripListComponent = new TripListView();
 
-  init = (container) => {
+  init = (container, tripsModel) => {
     this.container = container;
+    this.tripsModel = tripsModel;
+    this.dataTrips = [...this.tripsModel.getTrips()];
 
     render(new SortingView(), this.container);
     render(this.tripListComponent, this.container);
-    render(new FormEditView(), this.tripListComponent.getElement());
+    render(new FormEditView(this.dataTrips[0]), this.tripListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new RoutePointView(), this.tripListComponent.getElement());
+    for (let i = 1; i < this.dataTrips.length; i++) {
+      render(new RoutePointView(this.dataTrips[i]), this.tripListComponent.getElement());
     }
   };
 }

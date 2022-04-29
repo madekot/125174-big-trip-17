@@ -1,6 +1,6 @@
 import {createElement} from '../render';
 
-const createRoutePoint = () => (
+const createPointTemplate = () => (
   `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">MAR 18</time>
@@ -41,8 +41,12 @@ const createRoutePoint = () => (
 );
 
 export default class RoutePointView {
+  constructor(trip) {
+    this.trip = trip;
+  }
+
   getTemplate() {
-    return createRoutePoint();
+    return createPointTemplate(this.trip);
   }
 
   getElement() {
