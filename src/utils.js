@@ -46,17 +46,21 @@ const getDateDifference = (options = {}) => {
   return dayjs((dayjs(first) - dayjs(second))).format('HH:mm');
 };
 
-const textTransformCapitalize = (str) => (str[0].toUpperCase() + str.slice(1));
+const transformFirstLetterWordUppercase = (str) => (str[0].toUpperCase() + str.slice(1));
+
 const getTextFinalSay = (str) => str.split(' ').pop();
+
+const getRandomBoolean = () => Math.random() < 0.5;
 
 export {
   getDateDifference,
   getDateFrom,
   getDateTo,
+  getRandomBoolean,
   getRandomInteger,
   getRandomValue,
   getTextFinalSay,
   humanizeTripDateFrom,
   makeCounter,
-  textTransformCapitalize,
+  transformFirstLetterWordUppercase,
 };

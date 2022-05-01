@@ -1,17 +1,10 @@
 import {createElement} from '../render';
-import {textTransformCapitalize} from '../utils';
-
-const sortingsData = [
-  {name: 'day'},
-  {name: 'event', disabled: true},
-  {name: 'time'},
-  {name: 'price', disabled: true, checked: true},
-  {name: 'offer', disabled: true},
-];
+import {transformFirstLetterWordUppercase} from '../utils';
+import {SORTING_DEFAULT_LIST} from '../const';
 
 const createSortingItem = (sorting = {}) => {
   const name = sorting.name || 'day';
-  const label = sorting.name ? textTransformCapitalize(sorting.name) : 'Day';
+  const label = sorting.name ? transformFirstLetterWordUppercase(sorting.name) : 'Day';
   const disabled = sorting.disabled ? 'disabled' : '';
   const checked = sorting.checked ? 'checked' : '';
 
@@ -23,13 +16,13 @@ const createSortingItem = (sorting = {}) => {
   );
 };
 
-const createSortings = (data) => data.map((item) => createSortingItem(item)).join(' ');
-const sortings = createSortings(sortingsData);
+const createSortingList = (data) => data.map((item) => createSortingItem(item)).join(' ');
+const sortingList = createSortingList(SORTING_DEFAULT_LIST);
 
 const createSorting = () => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
-    ${sortings}
+    ${sortingList}
 
   </form>`
 );

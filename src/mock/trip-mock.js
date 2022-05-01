@@ -1,48 +1,40 @@
 import {
+  getRandomBoolean,
   getRandomInteger,
   getRandomValue,
   makeCounter,
 } from '../utils.js';
 
-const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const MIN_PRICE = 100;
-const MAX_PRICE = 9999;
-const COUNT_OFFERS = 2;
+import {
+  CITY_DESCRIPTIONS_MOCK,
+  CITY_NAMES_MOCK,
+  CITY_PICTURES_MOCK,
+  OFFERS_QUANTITY,
+  OFFER_PRICES_MOCK,
+  OFFER_TITLES_MOCK,
+  BASE_PRICE_MAX,
+  BASE_PRICE_MIN,
+  TYPES,
+} from '../const';
 
 const getType = () => getRandomValue(TYPES);
 
-const generateDestination = () => {
-  const descriptions = [
-    'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    'Aliquam id orci ut lectus varius viverra.'
-  ];
-  const names = ['Chamonix', 'Abidjan', 'Dakar'];
-  const pictures = [
-    {
-      src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-      description: 'Chamonix parliament building',
-    },
-  ];
-
-  return ({
-    description: getRandomValue(descriptions),
-    name: getRandomValue(names),
-    pictures: getRandomValue(pictures),
-  });
-};
+const generateDestination = () => (
+  {
+    description: getRandomValue(CITY_DESCRIPTIONS_MOCK),
+    name: getRandomValue(CITY_NAMES_MOCK),
+    pictures: getRandomValue(CITY_PICTURES_MOCK),
+  }
+);
 
 const generateOffer = () => {
-  const prices = [60, 120, 180];
-  const titles = ['Upgrade to a business class', 'Choose the radio station', 'Divan'];
-
-  const getIdQounter = makeCounter();
+  const getIdCounter = makeCounter();
 
   const getOffer = () => (
     {
-      id: getIdQounter(),
-      price: getRandomValue(prices),
-      title: getRandomValue(titles),
+      id: getIdCounter(),
+      price: getRandomValue(OFFER_PRICES_MOCK),
+      title: getRandomValue(OFFER_TITLES_MOCK),
     }
   );
 
@@ -50,7 +42,7 @@ const generateOffer = () => {
 
   return ({
     type: getType(),
-    offers: getOffers(COUNT_OFFERS),
+    offers: getOffers(OFFERS_QUANTITY),
   });
 };
 
@@ -75,16 +67,18 @@ const generateOffer = () => {
 // };
 
 const generatePointLocal = () => {
+  const basePrice = getRandomInteger(BASE_PRICE_MIN, BASE_PRICE_MAX);
   const destination = generateDestination();
   const offers = generateOffer();
   const type = getType();
+  const isFavorite = getRandomBoolean();
 
   return ({
-    basePrice: getRandomInteger(MIN_PRICE, MAX_PRICE),
+    basePrice,
     dateFrom: '2019-07-10T22:55:56.845Z',
     dateTo: '2019-07-11T11:22:13.375Z',
     destination,
-    isFavorite: false,
+    isFavorite,
     offers,
     type
   });

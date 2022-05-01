@@ -2,14 +2,20 @@ import {createElement} from '../render';
 import {
   getDateFrom,
   getDateTo,
+  getRandomBoolean,
   getTextFinalSay,
   makeCounter,
-  textTransformCapitalize,
+  transformFirstLetterWordUppercase,
 } from '../utils';
+
+import {
+  OFFERS_DEFAULT,
+  TYPES,
+} from '../const';
 
 const createEventTypeItem = (type = {}) => {
   const checked  = type.checked ? 'checked' : '';
-  const label = textTransformCapitalize(type.name);
+  const label = transformFirstLetterWordUppercase(type.name);
   const name = type.name || 'taxi';
 
   return (
@@ -20,21 +26,16 @@ const createEventTypeItem = (type = {}) => {
   );
 };
 
-const createEventTypes = (data) => {
-  const dataDefault = [
-    {name: 'taxi'},
-    {name: 'train'},
-    {name: 'ship'},
-    {name: 'drive'},
-    {name: 'flight', checked: true},
-    {name: 'check-in'},
-    {name: 'sightseeing'},
-    {name: 'restaurant'},
-  ];
+const createEventTypes = ({typeChecked, types}) => {
+  const cloneTypes = [...types];
+  const newTypes = Array(types.length).fill('').map((item, index) => (
+    {
+      checked: typeChecked === cloneTypes[index],
+      name: cloneTypes[index],
+    }
+  ));
 
-  data = data || dataDefault;
-
-  return data.map((idx) => createEventTypeItem(idx)).join('');
+  return newTypes.map((eventType) => createEventTypeItem(eventType)).join('');
 };
 
 const createOfferSelectorItem = (offer = {}) => {
@@ -56,20 +57,20 @@ const createOfferSelectorItem = (offer = {}) => {
   );
 };
 
-const createOfferSelectors = (data) => {
+const createOfferSelectors = (offers) => {
   const getId = makeCounter();
 
-  const dataDefault = [
-    {price: 50, title: 'Add luggage', checked: true},
-    {price: 80, title: 'Switch to comfort', checked: true},
-    {price: 15, title: 'Add meal'},
-    {price: 5, title: 'Choose seats'},
-    {price: 40, title: 'Travel by train'},
-  ];
+  const cloneOffers = offers ? [...offers] : [...OFFERS_DEFAULT];
+  const newOfferList = Array(cloneOffers.length).fill('').map((item, index) => (
+    {
+      checked: getRandomBoolean(),
+      id: getId(),
+      title: cloneOffers[index].title,
+      price: cloneOffers[index].price
+    }
+  ));
 
-  data = data || dataDefault;
-
-  return data.map((idx) => createOfferSelectorItem({...idx, id: getId()})).join('');
+  return newOfferList.map((item) => createOfferSelectorItem(item)).join('');
 };
 
 const createEditForm = (point = {}) => {
@@ -78,7 +79,7 @@ const createEditForm = (point = {}) => {
   const dateTo = getDateTo(point.dateTo);
   const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
   const destinationName = point.destination?.name || 'destination';
-  const eventTypeItems = createEventTypes();
+  const eventTypeItems = createEventTypes({typeChecked: point.offers?.type, types: TYPES});
   const offerSelectors = createOfferSelectors(point.offers?.offers);
   const offersLabel = point.offers?.type || 'flight';
   const typeIcon = point.offers?.type || 'flight';

@@ -1,9 +1,10 @@
 import {createElement} from '../render';
-import {textTransformCapitalize , getDateFrom, getDateDifference} from '../utils';
+import {transformFirstLetterWordUppercase , getDateFrom, getDateDifference} from '../utils';
+import {OFFERS_DEFAULT} from '../const';
 
-const createSelectedOfferItem = (Offer = {}) => {
-  const title = Offer.title || 'Add breakfast';
-  const price = Offer.price || 50;
+const createSelectedOfferItem = (offer = {}) => {
+  const title = offer.title;
+  const price = offer.price;
 
   return (
     `<li class="event__offer">
@@ -21,13 +22,11 @@ const createPointTemplate = (point = {}) => {
   const getMonthDay = (time) => getDateFrom(time, {type: 'monthDay'});
   const getTimeDuration = () => getDateDifference({first: point.dateFrom, second: point.dateTo});
 
-  const offersDataDefault = [{title: 'Add breakfast', price: 50}, {title: 'radio BG', price: 100}];
-
   const basePrice = point.basePrice || 600;
   const dateTitleFromHuman = getMonthDay();
   const dateTitleMachine = point.date || '2019-03-18';
   const isFavorite = point.isFavorite ? 'event__favorite-btn--active' : '';
-  const offers = point.offers?.offers || offersDataDefault;
+  const offers = point.offers?.offers || OFFERS_DEFAULT;
   const timeDuration = point.dateFrom ? getTimeDuration() : '40M';
   const timeEndHuman = getHoursMinutes(point.dateTo) || 'MAR 18';
   const timeEndMachine = point.timeEndMachine || '2019-03-18T13:35';
@@ -35,7 +34,8 @@ const createPointTemplate = (point = {}) => {
   const timeStartMachine = point.timeStartMachine || '2019-03-18T12:25';
   const title = point.destination?.name || 'Chamonix';
   const type = point.type || 'check-in';
-  const typeLabel = point.type ? textTransformCapitalize(point.type) : 'Check-in';
+  const typeLabel = point.type ? transformFirstLetterWordUppercase(point.type) : 'Check-in';
+
 
   const selectedOffers = createSelectedOffers(offers);
 

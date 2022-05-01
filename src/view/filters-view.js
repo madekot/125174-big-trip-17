@@ -1,9 +1,10 @@
 import {createElement} from '../render';
-import {textTransformCapitalize} from '../utils';
+import {transformFirstLetterWordUppercase} from '../utils';
+import {FILTER_NAMES} from '../const';
 
 const createFilterItem = (filter) => {
   const name = filter || 'everything';
-  const label = filter ? textTransformCapitalize(filter) : 'Everything';
+  const label = filter ? transformFirstLetterWordUppercase(filter) : 'Everything';
 
   return (
     `<div class="trip-filters__filter">
@@ -13,9 +14,8 @@ const createFilterItem = (filter) => {
   );
 };
 
-const filterNames = ['everything', 'future', 'past'];
 const createFilterList = (filters) => filters.map((filter) => createFilterItem(filter)).join('');
-const filterList = createFilterList(filterNames);
+const filterList = createFilterList(FILTER_NAMES);
 
 const createFilters = () => (
   `<form class="trip-filters" action="#" method="get">
