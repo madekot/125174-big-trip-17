@@ -2,16 +2,16 @@ import {createElement} from '../render';
 import {
   getDateFrom,
   getDateTo,
-  getRandomBoolean,
   getTextFinalSay,
-  makeCounter,
   transformFirstLetterWordUppercase,
 } from '../utils';
 
 import {
-  OFFERS_DEFAULT,
+  ID_DEFAULT_LIST,
   TYPES,
 } from '../const';
+
+import {generateOffers} from '../mock/trip-mock';
 
 const createEventTypeItem = (type = {}) => {
   const checked  = type.checked ? 'checked' : '';
@@ -40,10 +40,10 @@ const createEventTypes = ({typeChecked, types}) => {
 
 const createOfferSelectorItem = (offer = {}) => {
   const checked = offer.checked ? 'checked' : '';
-  const id = offer.id || '0';
+  const id = offer.id;
   const name = getTextFinalSay(offer.title);
-  const price = offer.price || 50;
-  const title = offer.title || 'Add luggage';
+  const price = offer.price;
+  const title = offer.title;
 
   return (
     `<div class="event__offer-selector">
@@ -57,32 +57,56 @@ const createOfferSelectorItem = (offer = {}) => {
   );
 };
 
-const createOfferSelectors = (offers) => {
-  const getId = makeCounter();
+const createOfferSelectors = (offers) => offers.map((item) => createOfferSelectorItem(item)).join('');
 
-  const cloneOffers = offers ? [...offers] : [...OFFERS_DEFAULT];
-  const newOfferList = Array(cloneOffers.length).fill('').map((item, index) => (
-    {
-      checked: getRandomBoolean(),
-      id: getId(),
-      title: cloneOffers[index].title,
-      price: cloneOffers[index].price
+const getOffersEqualCurrentType = ({type, offers}) => {
+  if (!offers.length) {
+    offers = generateOffers();
+  }
+
+  for (const offerItem of offers) {
+    if (offerItem.type === type) {
+      return [...offerItem.offers];
     }
-  ));
-
-  return newOfferList.map((item) => createOfferSelectorItem(item)).join('');
+  }
 };
 
-const createEditForm = (point = {}) => {
+const convertIdToOffers = ({offersList, idList}) => {
+  if (!idList) {
+    idList = ID_DEFAULT_LIST;
+  }
+
+  const arrC = [];
+
+  offersList.forEach((item) => {
+    idList.forEach((el) => {
+      if (item.id === el) {
+        arrC.push({...item});
+      }
+    });
+  });
+
+  return arrC;
+};
+
+const createEditForm = (point = {}, offers = {}) => {
   const basePrice = point.basePrice || 0;
   const dateFrom = getDateFrom(point.dateFrom);
   const dateTo = getDateTo(point.dateTo);
   const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
   const destinationName = point.destination?.name || 'destination';
-  const eventTypeItems = createEventTypes({typeChecked: point.offers?.type, types: TYPES});
-  const offerSelectors = createOfferSelectors(point.offers?.offers);
-  const offersLabel = point.offers?.type || 'flight';
-  const typeIcon = point.offers?.type || 'flight';
+  const offersLabel = point.type || 'flight';
+  const type = point.type || 'flight';
+  const typeIcon = point.type || 'flight';
+
+  const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
+
+  const offersConverted = convertIdToOffers(
+    {offersList: offerEqualCurrentType, idList: point.offers}
+  );
+
+  const eventTypeItems = createEventTypes({typeChecked: type, types: TYPES});
+  const offerSelectors = createOfferSelectors(offersConverted);
 
   return(
     `<li class="trip-events__item">
@@ -162,12 +186,13 @@ const createEditForm = (point = {}) => {
   );
 };
 export default class FormEditView {
-  constructor(point) {
+  constructor(point, offers) {
     this.point = point;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createEditForm(this.point);
+    return createEditForm(this.point, this.offers);
   }
 
   getElement() {

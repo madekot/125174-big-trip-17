@@ -9,7 +9,7 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const getRandomValue = (arr) => arr[getRandomInteger(0, arr.length - 1)];
+const getRandomValueArray = (arr) => arr[getRandomInteger(0, arr.length - 1)];
 
 const makeCounter = (options = {}) => {
   let start = options.start || 0;
@@ -58,7 +58,7 @@ export {
   getDateTo,
   getRandomBoolean,
   getRandomInteger,
-  getRandomValue,
+  getRandomValueArray,
   getTextFinalSay,
   humanizeTripDateFrom,
   makeCounter,

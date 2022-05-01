@@ -1,6 +1,15 @@
 import {createElement} from '../render';
-import {transformFirstLetterWordUppercase , getDateFrom, getDateDifference} from '../utils';
-import {OFFERS_DEFAULT} from '../const';
+import {
+  transformFirstLetterWordUppercase,
+  getDateFrom,
+  getDateDifference
+} from '../utils';
+
+import {
+  ID_DEFAULT_LIST,
+} from '../const';
+
+import {generateOffers} from '../mock/trip-mock';
 
 const createSelectedOfferItem = (offer = {}) => {
   const title = offer.title;
@@ -15,9 +24,41 @@ const createSelectedOfferItem = (offer = {}) => {
   );
 };
 
-const createSelectedOffers = (data) => data.map((item) => createSelectedOfferItem(item)).join('');
+const createSelectedOffers = (data) => data.map(
+  (item) => createSelectedOfferItem(item)
+).join('');
 
-const createPointTemplate = (point = {}) => {
+const getOffersEqualCurrentType = ({type, offers}) => {
+  if (!offers.length) {
+    offers = generateOffers();
+  }
+
+  for (const offerItem of offers) {
+    if (offerItem.type === type) {
+      return {...offerItem};
+    }
+  }
+};
+
+const convertIdToOffers = ({offersList, idList}) => {
+  if (!idList) {
+    idList = ID_DEFAULT_LIST;
+  }
+
+  const arrC = [];
+
+  offersList.forEach((item) => {
+    idList.forEach((el) => {
+      if (item.id === el) {
+        arrC.push({...item});
+      }
+    });
+  });
+
+  return arrC;
+};
+
+const createPointTemplate = (point = {}, offers = {}) => {
   const getHoursMinutes = (time) => getDateFrom(time, {type: 'hoursMinutes'});
   const getMonthDay = (time) => getDateFrom(time, {type: 'monthDay'});
   const getTimeDuration = () => getDateDifference({first: point.dateFrom, second: point.dateTo});
@@ -26,7 +67,6 @@ const createPointTemplate = (point = {}) => {
   const dateTitleFromHuman = getMonthDay();
   const dateTitleMachine = point.date || '2019-03-18';
   const isFavorite = point.isFavorite ? 'event__favorite-btn--active' : '';
-  const offers = point.offers?.offers || OFFERS_DEFAULT;
   const timeDuration = point.dateFrom ? getTimeDuration() : '40M';
   const timeEndHuman = getHoursMinutes(point.dateTo) || 'MAR 18';
   const timeEndMachine = point.timeEndMachine || '2019-03-18T13:35';
@@ -36,8 +76,13 @@ const createPointTemplate = (point = {}) => {
   const type = point.type || 'check-in';
   const typeLabel = point.type ? transformFirstLetterWordUppercase(point.type) : 'Check-in';
 
+  const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
 
-  const selectedOffers = createSelectedOffers(offers);
+  const offersConverted = convertIdToOffers(
+    {offersList: offerEqualCurrentType.offers, idList: point.offers}
+  );
+
+  const selectedOffers = createSelectedOffers(offersConverted);
 
   return(
     `<li class="trip-events__item">
@@ -77,12 +122,13 @@ const createPointTemplate = (point = {}) => {
 };
 
 export default class RoutePointView {
-  constructor(trip) {
+  constructor(trip, offers) {
     this.trip = trip;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createPointTemplate(this.trip);
+    return createPointTemplate(this.trip, this.offers);
   }
 
   getElement() {

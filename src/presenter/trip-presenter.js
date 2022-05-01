@@ -12,13 +12,24 @@ export default class TripsPresenter {
     this.container = container;
     this.tripsModel = tripsModel;
     this.dataTrips = [...this.tripsModel.getTrips()];
+    this.dataOffers = [...this.tripsModel.getOffers()];
 
     render(new SortingView(), this.container);
     render(this.tripListComponent, this.container);
-    render(new FormEditView(this.dataTrips[0]), this.tripListComponent.getElement());
+    render(
+      new FormEditView(
+        this.dataTrips[0], this.dataOffers[0]
+      ),
+      this.tripListComponent.getElement()
+    );
 
     for (let i = 1; i < this.dataTrips.length; i++) {
-      render(new RoutePointView(this.dataTrips[i]), this.tripListComponent.getElement());
+      render(
+        new RoutePointView(
+          this.dataTrips[i], this.dataOffers[i]
+        ),
+        this.tripListComponent.getElement()
+      );
     }
   };
 }

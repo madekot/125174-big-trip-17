@@ -1,77 +1,87 @@
 import {
   getRandomBoolean,
   getRandomInteger,
-  getRandomValue,
+  getRandomValueArray,
   makeCounter,
 } from '../utils.js';
 
 import {
-  CITY_DESCRIPTIONS_MOCK,
-  CITY_NAMES_MOCK,
-  CITY_PICTURES_MOCK,
-  OFFERS_QUANTITY,
-  OFFER_PRICES_MOCK,
-  OFFER_TITLES_MOCK,
   BASE_PRICE_MAX,
   BASE_PRICE_MIN,
+  CITY_DESCRIPTIONS,
+  CITY_NAMES,
+  CITY_PICTURES,
+  ID_DEFAULT_LIST,
+  OFFERS_QUANTITY,
+  OFFER_PRICES,
+  OFFER_TITLES,
   TYPES,
 } from '../const';
 
-const getType = () => getRandomValue(TYPES);
-
 const generateDestination = () => (
   {
-    description: getRandomValue(CITY_DESCRIPTIONS_MOCK),
-    name: getRandomValue(CITY_NAMES_MOCK),
-    pictures: getRandomValue(CITY_PICTURES_MOCK),
+    description: getRandomValueArray(CITY_DESCRIPTIONS),
+    name: getRandomValueArray(CITY_NAMES),
+    pictures: getRandomValueArray(CITY_PICTURES),
   }
 );
 
-const generateOffer = () => {
-  const getIdCounter = makeCounter();
+const generateOfferItem = ({index}) => {
+  const getId = makeCounter();
 
-  const getOffer = () => (
+  const getOfferElement = () => (
     {
-      id: getIdCounter(),
-      price: getRandomValue(OFFER_PRICES_MOCK),
-      title: getRandomValue(OFFER_TITLES_MOCK),
+      id: getId(),
+      price: getRandomValueArray(OFFER_PRICES),
+      title: getRandomValueArray(OFFER_TITLES),
     }
   );
 
-  const getOffers = (countOffers) => Array.from({length: countOffers}, getOffer);
+  const offerItem = Array.from({length: OFFERS_QUANTITY}, getOfferElement);
+  const offers = offerItem;
+  const type = TYPES[index];
 
   return ({
-    type: getType(),
-    offers: getOffers(OFFERS_QUANTITY),
+    offers,
+    type,
   });
 };
 
-// const generatePoint = () => {
-//   const destination = generateDestination();
-//   const offers = generateOffer();
-//   const type = getType();
+const generateOffers = () => (
+  Array(TYPES.length)
+    .fill('')
+    .map((el, index) => (
+      generateOfferItem({ index })
+    ))
+);
 
-//   const getIdPoint = makeCounter();
-//   const id = getIdPoint().toString();
+const generatePoint = () => {
+  const destination = generateDestination();
+  const getIdCounter = makeCounter();
+  const offers = Array.from({length: OFFERS_QUANTITY}, () => getIdCounter());
+  const type = getRandomValueArray(TYPES);
+  const isFavorite = getRandomBoolean();
+  const getIdPoint = makeCounter();
+  const id = getIdPoint();
 
-//   return ({
-//     basePrice: 1100,
-//     dateFrom: '2019-07-10T22:55:56.845Z',
-//     dateTo: '2019-07-11T11:22:13.375Z',
-//     destination,
-//     id,
-//     isFavorite: false,
-//     offers,
-//     type
-//   });
-// };
+  return ({
+    basePrice: 1100,
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
+    destination,
+    id,
+    isFavorite,
+    offers,
+    type
+  });
+};
 
 const generatePointLocal = () => {
   const basePrice = getRandomInteger(BASE_PRICE_MIN, BASE_PRICE_MAX);
   const destination = generateDestination();
-  const offers = generateOffer();
-  const type = getType();
   const isFavorite = getRandomBoolean();
+  const type = getRandomValueArray(TYPES);
+  const offers = ID_DEFAULT_LIST;
 
   return ({
     basePrice,
@@ -84,20 +94,25 @@ const generatePointLocal = () => {
   });
 };
 
-// const errorAuthorization = () => (
-//   {
-//     error: 401,
-//     message: 'Header Authorization is not correct'
-//   }
-// );
+const generateAuthorizationError = () => (
+  {
+    error: 401,
+    message: 'Header Authorization is not correct'
+  }
+);
 
-// const errorNotFound = () => (
-//   {
-//     error: 404,
-//     message: 'Not found'
-//   }
-// );
+const generateNotFoundError = () => (
+  {
+    error: 404,
+    message: 'Not found'
+  }
+);
 
 export {
+  generateAuthorizationError,
+  generateDestination,
+  generateNotFoundError,
+  generateOffers,
+  generatePoint,
   generatePointLocal,
 };

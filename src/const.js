@@ -1,5 +1,5 @@
-const MOCK_QUANTITY = 6;
-const OFFERS_QUANTITY = 2;
+const MOCK_QUANTITY = 3;
+const OFFERS_QUANTITY = 7;
 const BASE_PRICE_MAX = 9999;
 const BASE_PRICE_MIN = 100;
 
@@ -21,28 +21,33 @@ const TYPES = [
   'restaurant'
 ];
 
-const OFFER_TITLES_MOCK = [
+const OFFER_TITLES = [
   'Upgrade to a business class',
   'Choose the radio station',
   'Divan'
 ];
 
-const CITY_DESCRIPTIONS_MOCK = [
+const CITY_DESCRIPTIONS = [
   'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Aliquam id orci ut lectus varius viverra.'
 ];
 
-const CITY_NAMES_MOCK = [
+const CITY_NAMES = [
   'Chamonix',
   'Abidjan',
   'Dakar'
 ];
 
-const OFFER_PRICES_MOCK = [
+const OFFER_PRICES = [
   60,
   120,
   180
+];
+
+const ID_DEFAULT_LIST = [
+  1,
+  3
 ];
 
 const OFFERS_DEFAULT = [
@@ -61,22 +66,23 @@ const SORTING_DEFAULT_LIST = [
   { name: 'offer', disabled: true , checked: false },
 ];
 
-const CITY_PICTURES_MOCK = [
+const CITY_PICTURES = [
   { src: 'http://picsum.photos/300/200?r=0.0762563005163317', description: 'Chamonix parliament building', },
 ];
 
 export {
   BASE_PRICE_MAX,
   BASE_PRICE_MIN,
-  CITY_DESCRIPTIONS_MOCK,
-  CITY_NAMES_MOCK,
-  CITY_PICTURES_MOCK,
+  CITY_DESCRIPTIONS,
+  CITY_NAMES,
+  CITY_PICTURES,
   FILTER_NAMES,
+  ID_DEFAULT_LIST,
   MOCK_QUANTITY,
   OFFERS_DEFAULT,
   OFFERS_QUANTITY,
-  OFFER_PRICES_MOCK,
-  OFFER_TITLES_MOCK,
+  OFFER_PRICES,
+  OFFER_TITLES,
   SORTING_DEFAULT_LIST,
   TYPES,
 };
