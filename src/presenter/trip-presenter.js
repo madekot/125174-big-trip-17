@@ -1,22 +1,35 @@
+import FormEditView from '../view/form-edit-view';
 import RoutePointView from '../view/route-point-view';
-import EditingFormView from '../view/editing-form-view';
-import TripListView from '../view/trip-list-view';
 import SortingView from '../view/sorting-view';
+import TripListView from '../view/trip-list-view';
 
 import {render} from '../render';
 
 export default class TripsPresenter {
   tripListComponent = new TripListView();
 
-  init = (container) => {
+  init = (container, tripsModel) => {
     this.container = container;
+    this.tripsModel = tripsModel;
+    this.dataTrips = [...this.tripsModel.getTrips()];
+    this.dataOffers = [...this.tripsModel.getOffers()];
 
     render(new SortingView(), this.container);
     render(this.tripListComponent, this.container);
-    render(new EditingFormView(), this.tripListComponent.getElement());
+    render(
+      new FormEditView(
+        this.dataTrips[0], this.dataOffers[0]
+      ),
+      this.tripListComponent.getElement()
+    );
 
-    for (let i = 0; i < 3; i++) {
-      render(new RoutePointView(), this.tripListComponent.getElement());
+    for (let i = 1; i < this.dataTrips.length; i++) {
+      render(
+        new RoutePointView(
+          this.dataTrips[i], this.dataOffers[i]
+        ),
+        this.tripListComponent.getElement()
+      );
     }
   };
 }
