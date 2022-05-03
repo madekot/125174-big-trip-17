@@ -13,6 +13,20 @@ import {
 
 import {generateOffers} from '../mock/trip-mock';
 
+const createPicturesList = (data) => data.map(
+  (pictures) => (
+    `<img class="event__photo" src="${pictures.src}" alt="${pictures.description}">`
+  )
+).join(' ');
+
+const createPicturesContainer  = (picturesList) => (
+  `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${createPicturesList(picturesList)}
+    </div>
+  </div>`
+);
+
 const createEventTypeItem = (type = {}) => {
   const checked  = type.checked ? 'checked' : '';
   const label = transformFirstLetterWordUppercase(type.name);
@@ -57,7 +71,9 @@ const createOfferSelectorItem = (offer = {}) => {
   );
 };
 
-const createOfferSelectors = (offers) => offers.map((item) => createOfferSelectorItem(item)).join('');
+const createOfferSelectors = (offers) => offers.map(
+  (item) => createOfferSelectorItem(item)
+).join('');
 
 const getOffersEqualCurrentType = ({type, offers}) => {
   if (!offers.length) {
@@ -107,6 +123,7 @@ const createEditForm = (point = {}, offers = {}) => {
 
   const eventTypeItems = createEventTypes({typeChecked: type, types: TYPES});
   const offerSelectors = createOfferSelectors(offersConverted);
+  const pictures = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
 
   return(
     `<li class="trip-events__item">
@@ -179,6 +196,9 @@ const createEditForm = (point = {}, offers = {}) => {
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">destination</h3>
             <p class="event__destination-description">${destinationDescription}</p>
+
+            ${pictures}
+
           </section>
         </section>
       </form>

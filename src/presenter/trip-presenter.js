@@ -1,8 +1,8 @@
 import FormEditView from '../view/form-edit-view';
+import NoTripView from '../view/no-trip-view';
 import RoutePointView from '../view/route-point-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
-import NoTripView from '../view/no-trip-view';
 
 import {render} from '../render';
 export default class TripsPresenter {
