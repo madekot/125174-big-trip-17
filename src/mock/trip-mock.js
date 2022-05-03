@@ -20,9 +20,13 @@ import {
 
 const generateDestination = () => (
   {
-    description: getRandomValueArray(CITY_DESCRIPTIONS),
+    description: getRandomBoolean()
+      ? getRandomValueArray(CITY_DESCRIPTIONS)
+      : '',
     name: getRandomValueArray(CITY_NAMES),
-    pictures: getRandomValueArray(CITY_PICTURES),
+    pictures: getRandomBoolean()
+      ? Array(3).fill(getRandomValueArray(CITY_PICTURES))
+      : '',
   }
 );
 

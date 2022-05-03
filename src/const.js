@@ -3,10 +3,10 @@ const OFFERS_QUANTITY = 7;
 const BASE_PRICE_MAX = 9999;
 const BASE_PRICE_MIN = 100;
 
-const FILTER_NAMES = [
-  'everything',
-  'future',
-  'past',
+const FILTER_DEFAULT = [
+  {name: 'everything', checked: true ,},
+  {name: 'future'    , checked: false,},
+  {name: 'past'      , checked: false,},
 ];
 
 const TYPES = [
@@ -59,15 +59,18 @@ const OFFERS_DEFAULT = [
 ];
 
 const SORTING_DEFAULT_LIST = [
-  { name: 'day'  , disabled: false, checked: false },
-  { name: 'event', disabled: true , checked: false },
-  { name: 'time' , disabled: false, checked: false },
-  { name: 'price', disabled: true , checked: true  },
-  { name: 'offer', disabled: true , checked: false },
+  { name: 'day'   , disabled: false , checked: false },
+  { name: 'event' , disabled: true  , checked: false },
+  { name: 'time'  , disabled: false , checked: false },
+  { name: 'price' , disabled: false , checked: true  },
+  { name: 'offer' , disabled: true  , checked: false },
 ];
 
 const CITY_PICTURES = [
-  { src: 'http://picsum.photos/300/200?r=0.0762563005163317', description: 'Chamonix parliament building', },
+  {
+    description: 'Chamonix parliament building',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
 ];
 
 export {
@@ -76,7 +79,7 @@ export {
   CITY_DESCRIPTIONS,
   CITY_NAMES,
   CITY_PICTURES,
-  FILTER_NAMES,
+  FILTER_DEFAULT,
   ID_DEFAULT_LIST,
   MOCK_QUANTITY,
   OFFERS_DEFAULT,

@@ -13,3 +13,6 @@ node_modules/
 
 # Собранные файлы (допишите самостоятельно)
 /build/
+
+# Конфиг для плагина Code Spell Checker
+.cSpell.json
