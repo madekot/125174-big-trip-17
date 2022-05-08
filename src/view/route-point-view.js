@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import {
   transformFirstLetterWordUppercase,
   getDateFrom,
@@ -121,29 +121,17 @@ const createPointTemplate = (point = {}, offers = {}) => {
   );
 };
 
-export default class RoutePointView {
-  #element = null;
+export default class RoutePointView extends AbstractView {
   #trip = null;
   #offers = null;
 
   constructor(trip, offers) {
+    super();
     this.#trip = trip;
     this.#offers = offers;
   }
 
   get template() {
     return createPointTemplate(this.#trip, this.#offers);
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

@@ -3,8 +3,7 @@ import NoTripView from '../view/no-trip-view';
 import RoutePointView from '../view/route-point-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
-
-import {render} from '../render';
+import {render} from '../framework/render';
 export default class TripsPresenter {
   #boardContainer = null;
   #tripsModel = null;

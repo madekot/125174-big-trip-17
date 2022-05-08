@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import {
   getDateFrom,
   getDateTo,
@@ -205,29 +205,17 @@ const createEditForm = (point = {}, offers = {}) => {
     </li>`
   );
 };
-export default class FormEditView {
-  #element = null;
+export default class FormEditView extends AbstractView {
   #point = null;
   #offers = null;
 
   constructor(point, offers) {
+    super();
     this.#point = point;
     this.#offers = offers;
   }
 
   get template() {
     return createEditForm(this.#point, this.#offers);
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
