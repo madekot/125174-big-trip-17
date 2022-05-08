@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import {SORTING_DEFAULT_LIST} from '../const';
-import {transformFirstLetterWordUppercase} from '../utils';
+import {transformFirstLetterWordUppercase} from '../utils/common';
 
 const createSortingItem = (sorting = {}) => {
   const name = sorting.name || 'day';

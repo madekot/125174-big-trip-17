@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {transformFirstLetterWordUppercase} from '../utils';
+import {transformFirstLetterWordUppercase} from '../utils/common';
 import {FILTER_DEFAULT} from '../const';
 
 const createFilterItem = (filter = {}) => {

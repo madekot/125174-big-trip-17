@@ -3,7 +3,7 @@ import {
   getRandomInteger,
   getRandomValueArray,
   makeCounter,
-} from '../utils.js';
+} from '../utils/common';
 
 import {
   BASE_PRICE_MAX,

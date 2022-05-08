@@ -1,9 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import {
-  transformFirstLetterWordUppercase,
-  getDateFrom,
-  getDateDifference
-} from '../utils';
+import { getDateFrom, getDateDifference } from '../utils/trips';
+import { transformFirstLetterWordUppercase, } from '../utils/common';
 
 import {
   ID_DEFAULT_LIST,

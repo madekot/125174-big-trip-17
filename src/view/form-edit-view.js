@@ -1,10 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import {
-  getDateFrom,
-  getDateTo,
-  getTextFinalSay,
-  transformFirstLetterWordUppercase,
-} from '../utils';
+import { getDateFrom, getDateTo, } from '../utils/trips';
+import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
 
 import {
   ID_DEFAULT_LIST,
