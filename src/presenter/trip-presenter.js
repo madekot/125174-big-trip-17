@@ -49,24 +49,20 @@ export default class TripsPresenter {
       }
     };
 
-    formEditComponent.element.querySelector('form')
-      .addEventListener('submit', (evt) => {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    formEditComponent.setFormSubmitHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
-    formEditComponent.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    formEditComponent.setEditClickHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
-    pointComponent.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', () => {
-        replacePointToForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      });
+    pointComponent.setEditClickHandler(() => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
 
     render(pointComponent, this.#tripListComponent.element);
   };
