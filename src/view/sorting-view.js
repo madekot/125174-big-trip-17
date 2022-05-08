@@ -1,6 +1,6 @@
-import {createElement} from '../render';
-import {transformFirstLetterWordUppercase} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
 import {SORTING_DEFAULT_LIST} from '../const';
+import {transformFirstLetterWordUppercase} from '../utils/common';
 
 const createSortingItem = (sorting = {}) => {
   const name = sorting.name || 'day';
@@ -27,22 +27,8 @@ const createSorting = () => (
   </form>`
 );
 
-export default class SortingView {
-  #element = null;
-
+export default class SortingView extends AbstractView {
   get template() {
     return createSorting();
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

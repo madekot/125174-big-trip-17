@@ -1,5 +1,5 @@
-import {createElement} from '../render';
-import {transformFirstLetterWordUppercase} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
+import {transformFirstLetterWordUppercase} from '../utils/common';
 import {FILTER_DEFAULT} from '../const';
 
 const createFilterItem = (filter = {}) => {
@@ -30,22 +30,8 @@ const createFilters = () => (
   </form>`
 );
 
-export default class FilterView {
-  #element = null;
-
+export default class FilterView extends AbstractView {
   get template() {
     return createFilters();
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

@@ -1,9 +1,6 @@
-import {createElement} from '../render';
-import {
-  transformFirstLetterWordUppercase,
-  getDateFrom,
-  getDateDifference
-} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
+import { getDateFrom, getDateDifference } from '../utils/trips';
+import { transformFirstLetterWordUppercase, } from '../utils/common';
 
 import {
   ID_DEFAULT_LIST,
@@ -121,12 +118,12 @@ const createPointTemplate = (point = {}, offers = {}) => {
   );
 };
 
-export default class RoutePointView {
-  #element = null;
+export default class RoutePointView extends AbstractView {
   #trip = null;
   #offers = null;
 
   constructor(trip, offers) {
+    super();
     this.#trip = trip;
     this.#offers = offers;
   }
@@ -135,15 +132,15 @@ export default class RoutePointView {
     return createPointTemplate(this.#trip, this.#offers);
   }
 
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#clickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

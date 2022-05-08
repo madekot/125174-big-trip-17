@@ -3,8 +3,11 @@ import NoTripView from '../view/no-trip-view';
 import RoutePointView from '../view/route-point-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
-
-import {render} from '../render';
+import {
+  remove,
+  render,
+  replace,
+} from '../framework/render';
 export default class TripsPresenter {
   #boardContainer = null;
   #tripsModel = null;
@@ -31,15 +34,11 @@ export default class TripsPresenter {
     const pointComponent = new RoutePointView(point, offers);
 
     const replaceFormToPoint = () => {
-      this.#tripListComponent.element.replaceChild(
-        pointComponent.element, formEditComponent.element
-      );
+      replace(pointComponent, formEditComponent);
     };
 
     const replacePointToForm = () => {
-      this.#tripListComponent.element.replaceChild(
-        formEditComponent.element, pointComponent.element
-      );
+      replace(formEditComponent, pointComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -50,24 +49,25 @@ export default class TripsPresenter {
       }
     };
 
-    formEditComponent.element.querySelector('form')
-      .addEventListener('submit', (evt) => {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    formEditComponent.setFormSubmitHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
-    formEditComponent.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    formEditComponent.setEditClickHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
-    pointComponent.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', () => {
-        replacePointToForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      });
+    formEditComponent.setDeleteClickHandler(() => {
+      remove(formEditComponent);
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointComponent.setEditClickHandler(() => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
 
     render(pointComponent, this.#tripListComponent.element);
   };

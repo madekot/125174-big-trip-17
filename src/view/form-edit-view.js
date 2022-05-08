@@ -1,10 +1,6 @@
-import {createElement} from '../render';
-import {
-  getDateFrom,
-  getDateTo,
-  getTextFinalSay,
-  transformFirstLetterWordUppercase,
-} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
+import { getDateFrom, getDateTo, } from '../utils/trips';
+import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
 
 import {
   ID_DEFAULT_LIST,
@@ -205,12 +201,12 @@ const createEditForm = (point = {}, offers = {}) => {
     </li>`
   );
 };
-export default class FormEditView {
-  #element = null;
+export default class FormEditView extends AbstractView {
   #point = null;
   #offers = null;
 
   constructor(point, offers) {
+    super();
     this.#point = point;
     this.#offers = offers;
   }
@@ -219,15 +215,39 @@ export default class FormEditView {
     return createEditForm(this.#point, this.#offers);
   }
 
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.#element;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.submit = callback;
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submit();
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick();
+  };
 }
