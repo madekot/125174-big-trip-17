@@ -1,13 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
-import { getDateFrom, getDateTo, } from '../utils/trips';
+import { getDateFrom, getDateTo, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
 import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
-
-import {
-  ID_DEFAULT_LIST,
-  TYPES,
-} from '../const';
-
-import {generateOffers} from '../mock/trip-mock';
+import { TYPES } from '../const';
 
 const createPicturesList = (data) => data.map(
   (pictures) => (
@@ -71,36 +65,6 @@ const createOfferSelectors = (offers) => offers.map(
   (item) => createOfferSelectorItem(item)
 ).join('');
 
-const getOffersEqualCurrentType = ({type, offers}) => {
-  if (!offers.length) {
-    offers = generateOffers();
-  }
-
-  for (const offerItem of offers) {
-    if (offerItem.type === type) {
-      return [...offerItem.offers];
-    }
-  }
-};
-
-const convertIdToOffers = ({offersList, idList}) => {
-  if (!idList) {
-    idList = ID_DEFAULT_LIST;
-  }
-
-  const arrC = [];
-
-  offersList.forEach((item) => {
-    idList.forEach((el) => {
-      if (item.id === el) {
-        arrC.push({...item});
-      }
-    });
-  });
-
-  return arrC;
-};
-
 const createEditForm = (point = {}, offers = {}) => {
   const basePrice = point.basePrice || 0;
   const dateFrom = getDateFrom(point.dateFrom);
@@ -114,7 +78,7 @@ const createEditForm = (point = {}, offers = {}) => {
   const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
 
   const offersConverted = convertIdToOffers(
-    {offersList: offerEqualCurrentType, idList: point.offers}
+    {offersList: offerEqualCurrentType.offers, idList: point.offers}
   );
 
   const eventTypeItems = createEventTypes({typeChecked: type, types: TYPES});
