@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import {generateOffers} from '../mock/trip-mock';
+import {ID_DEFAULT_LIST} from '../const';
 
 const humanizeTripDateFrom = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
 
@@ -30,9 +32,41 @@ const getDateDifference = (options = {}) => {
   return dayjs((dayjs(first) - dayjs(second))).format('HH:mm');
 };
 
+const getOffersEqualCurrentType = ({type, offers}) => {
+  if (!offers.length) {
+    offers = generateOffers();
+  }
+
+  for (const offerItem of offers) {
+    if (offerItem.type === type) {
+      return {...offerItem};
+    }
+  }
+};
+
+const convertIdToOffers = ({offersList, idList}) => {
+  if (!idList) {
+    idList = ID_DEFAULT_LIST;
+  }
+
+  const arrC = [];
+
+  offersList.forEach((item) => {
+    idList.forEach((el) => {
+      if (item.id === el) {
+        arrC.push({...item});
+      }
+    });
+  });
+
+  return arrC;
+};
+
 export {
+  convertIdToOffers,
   getDateDifference,
   getDateFrom,
   getDateTo,
+  getOffersEqualCurrentType,
   humanizeTripDateFrom,
 };

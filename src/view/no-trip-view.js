@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 
-const createNoTripTemplate = (filterType = 'Everthing') => {
+const createNoTripTemplate = (filterType = 'Everything') => {
   let message = 'Click New Event to create your first point';
 
   if (filterType === 'Past') {

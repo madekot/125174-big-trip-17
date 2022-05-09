@@ -1,12 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import { getDateFrom, getDateDifference } from '../utils/trips';
+import { getDateFrom, getDateDifference, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
 import { transformFirstLetterWordUppercase, } from '../utils/common';
-
-import {
-  ID_DEFAULT_LIST,
-} from '../const';
-
-import {generateOffers} from '../mock/trip-mock';
 
 const createSelectedOfferItem = (offer = {}) => {
   const title = offer.title;
@@ -24,36 +18,6 @@ const createSelectedOfferItem = (offer = {}) => {
 const createSelectedOffers = (data) => data.map(
   (item) => createSelectedOfferItem(item)
 ).join('');
-
-const getOffersEqualCurrentType = ({type, offers}) => {
-  if (!offers.length) {
-    offers = generateOffers();
-  }
-
-  for (const offerItem of offers) {
-    if (offerItem.type === type) {
-      return {...offerItem};
-    }
-  }
-};
-
-const convertIdToOffers = ({offersList, idList}) => {
-  if (!idList) {
-    idList = ID_DEFAULT_LIST;
-  }
-
-  const arrC = [];
-
-  offersList.forEach((item) => {
-    idList.forEach((el) => {
-      if (item.id === el) {
-        arrC.push({...item});
-      }
-    });
-  });
-
-  return arrC;
-};
 
 const createPointTemplate = (point = {}, offers = {}) => {
   const getHoursMinutes = (time) => getDateFrom(time, {type: 'hoursMinutes'});
