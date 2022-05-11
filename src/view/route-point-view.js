@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { getDateFrom, getDateDifference, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
+import { humanizeDate, getDateDifference, getOffersEqualCurrentType, convertIdToOffers, } from '../utils/trips';
 import { transformFirstLetterWordUppercase, } from '../utils/common';
 
 const createSelectedOfferItem = (offer = {}) => {
@@ -20,9 +20,9 @@ const createSelectedOffers = (data) => data.map(
 ).join('');
 
 const createPointTemplate = (point = {}, offers = {}) => {
-  const getHoursMinutes = (time) => getDateFrom(time, {type: 'hoursMinutes'});
-  const getMonthDay = (time) => getDateFrom(time, {type: 'monthDay'});
-  const getTimeDuration = () => getDateDifference({first: point.dateFrom, second: point.dateTo});
+  const getHoursMinutes = (time) => humanizeDate(time, {type: 'hoursMinute'});
+  const getMonthDay = (time) => humanizeDate(time, {type: 'nameMonthNumberedDay '});
+  const getTimeDuration = () => getDateDifference({timeStart: point.dateFrom, timeEnd: point.dateTo});
 
   const basePrice = point.basePrice || 600;
   const dateTitleFromHuman = getMonthDay();

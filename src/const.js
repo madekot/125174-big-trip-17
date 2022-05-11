@@ -2,6 +2,12 @@ const MOCK_QUANTITY = 3;
 const OFFERS_QUANTITY = 7;
 const BASE_PRICE_MAX = 9999;
 const BASE_PRICE_MIN = 100;
+const END_MINUTE_TRIP = 65;
+
+const timestamp = {
+  HOUR: 3600000,
+  DAY: 86400000,
+};
 
 const FILTER_DEFAULT = [
   {name: 'everything', checked: true ,},
@@ -79,6 +85,7 @@ export {
   CITY_DESCRIPTIONS,
   CITY_NAMES,
   CITY_PICTURES,
+  END_MINUTE_TRIP,
   FILTER_DEFAULT,
   ID_DEFAULT_LIST,
   MOCK_QUANTITY,
@@ -88,4 +95,5 @@ export {
   OFFER_TITLES,
   SORTING_DEFAULT_LIST,
   TYPES,
+  timestamp,
 };

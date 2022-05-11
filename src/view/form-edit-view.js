@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { getDateFrom, getDateTo, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
+import { humanizeDate, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
 import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
 import { TYPES } from '../const';
 
@@ -67,8 +67,8 @@ const createOfferSelectors = (offers) => offers.map(
 
 const createEditForm = (point = {}, offers = {}) => {
   const basePrice = point.basePrice || 0;
-  const dateFrom = getDateFrom(point.dateFrom);
-  const dateTo = getDateTo(point.dateTo);
+  const dateFrom = humanizeDate(point.dateFrom);
+  const dateTo = humanizeDate(point.dateTo);
   const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
   const destinationName = point.destination?.name || 'destination';
   const offersLabel = point.type || 'flight';
