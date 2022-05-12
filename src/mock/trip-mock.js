@@ -7,14 +7,13 @@ import {
   makeCounter,
 } from '../utils/common';
 
-
 import {
   BASE_PRICE_MAX,
   BASE_PRICE_MIN,
   CITY_DESCRIPTIONS,
   CITY_NAMES,
   CITY_PICTURES,
-  END_MINUTE_TRIP,
+  DURATION_TRIP_MINUTES,
   ID_DEFAULT_LIST,
   OFFERS_QUANTITY,
   OFFER_PRICES,
@@ -93,10 +92,8 @@ const generatePointLocal = () => {
 
   return ({
     basePrice,
-    // dateFrom: '2019-07-10T22:55:56.845Z',
-    // dateTo: '2019-07-11T11:22:13.375Z',
-    dateFrom: dayjs().toDate(),
-    dateTo: dayjs().add(END_MINUTE_TRIP, 'minute').toDate(),
+    dateFrom: dayjs().toISOString(),
+    dateTo: dayjs().add(DURATION_TRIP_MINUTES, 'minute').toISOString(),
     destination,
     isFavorite,
     offers,

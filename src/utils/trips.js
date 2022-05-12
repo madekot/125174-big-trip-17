@@ -1,59 +1,86 @@
 import dayjs from 'dayjs';
 import { generateOffers } from '../mock/trip-mock';
 import { ID_DEFAULT_LIST, timestamp, } from '../const';
+import {
+  getDays,
+  getDifferenceMilliseconds,
+  getHours,
+  isTwoNumber,
+} from '../utils/common';
 
 const humanizeDate = (time, options = {}) => {
   const type = options.type;
+  const days = getDays(time);
+  const hours = getHours(time);
 
-  if (type === 'nameMonthNumberedDay ') {
-    return time ? dayjs(time).format('MMM DD') : 'MAR 18';
+  switch(type) {
+    case 'nameMonthNumberedDay':
+      return (
+        time
+          ? dayjs(time).format('MMM DD')
+          : 'MAR 18'
+      );
+
+    case 'hoursMinute':
+      return (
+        time
+          ? dayjs(time).format('HH:mm')
+          : '16:20'
+      );
+
+    case 'minuteAndSymbol':
+      return (
+        time
+          ? `${dayjs(time).format('mm')}M`
+          : '30M'
+      );
+
+    case 'dayAndSymbol':
+      return isTwoNumber(days)
+        ? `${days}D` // '22D'
+        : `0${days}D`; // '01D'
+
+    case 'hoursAndSymbol':
+      return isTwoNumber(hours)
+        ? `${hours}H` // '22H'
+        : `0${hours}H`; // '01H'
+
+    case 'hoursMinuteAndSymbol':
+      return (
+        time
+          ? (`
+            ${humanizeDate(time, {type: 'hoursAndSymbol'})}
+            ${humanizeDate(time, {type: 'minuteAndSymbol'})}
+          `)
+          : '02H 44M'
+      );
+
+    case 'dayHoursMinuteAndSymbol':
+      return (
+        time
+          ? (`
+            ${humanizeDate(time, {type: 'dayAndSymbol'})}
+            ${humanizeDate(time, {type: 'hoursAndSymbol'})}
+            ${humanizeDate(time, {type: 'minuteAndSymbol'})}
+          `)
+          : '01D 02H 30M'
+      );
+
+    default:
+      return (
+        time
+          ? dayjs(time).format('DD/MM/YY HH:mm')
+          : '00/00/00 00:00'
+      );
   }
-
-  if (type === 'hoursMinute') {
-    return time ? dayjs(time).format('HH:mm') : '16:20';
-  }
-
-  if (type === 'minuteAndSymbol') {
-    return time ? `${dayjs(time).format('mm')}M` : '30M';
-  }
-
-  if (type === 'dayAndSymbol') {
-    return time ? `${dayjs(time).format('DD')}D` : '1D';
-  }
-
-  if (type === 'hoursAndSymbol') {
-    console.log(dayjs(time).format('HH'));
-    // return time ? `${dayjs(time).subtract(3, 'hour').format('HH')}H` : '02H';
-    return time ? `${dayjs(time).format('HH')}H` : '02H';
-  }
-
-  if (type === 'hoursMinuteAndSymbol') {
-    return (
-      time
-        ? `${humanizeDate(time, {type: 'hoursAndSymbol'})} ${humanizeDate(time, {type: 'minuteAndSymbol'})} `
-        : '02H 44M'
-    );
-  }
-
-  if (type === 'dayHoursMinuteAndSymbol') {
-    return (
-      time
-        ? `${humanizeDate(time, {type: 'dayAndSymbol'})} ${humanizeDate(time, {type: 'minuteAndSymbol'})} ${humanizeDate(time, {type: 'hoursAndSymbol'})}`
-        : '1D 02H 44M'
-    );
-  }
-
-  return time ? dayjs(time).format('DD/MM/YY HH:mm') : '00/00/00 00:00';
 };
 
 const getTypeHumanizeDate = ({timeStart, timeEnd}) => {
-  const differenceUnixTimeMilliseconds =  dayjs(timeEnd) - dayjs(timeStart);
-
-  if (differenceUnixTimeMilliseconds < timestamp.HOUR) {
+  if (getDifferenceMilliseconds({timeStart, timeEnd}) < timestamp.HOUR) {
     return 'minuteAndSymbol';
   }
 
-  if (differenceUnixTimeMilliseconds < timestamp.DAY) {
+  if (getDifferenceMilliseconds({timeStart, timeEnd}) < timestamp.DAY) {
     return 'hoursMinuteAndSymbol';
   }
 
@@ -64,9 +91,8 @@ const getDateDifference = (options = {}) => {
   const timeStart = options.timeStart;
   const timeEnd = options.timeEnd;
 
-  const difference = dayjs(timeEnd) - dayjs(timeStart);
   const type = getTypeHumanizeDate({timeStart, timeEnd});
-  return humanizeDate(difference, {type});
+  return humanizeDate(getDifferenceMilliseconds({timeStart, timeEnd}), {type});
 };
 
 const getOffersEqualCurrentType = ({type, offers}) => {
