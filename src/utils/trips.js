@@ -5,7 +5,7 @@ import {
   getDays,
   getDifferenceMilliseconds,
   getHours,
-  isTwoNumber,
+  isDoubleDigits,
 } from '../utils/common';
 
 const humanizeDate = (time, options = {}) => {
@@ -36,12 +36,12 @@ const humanizeDate = (time, options = {}) => {
       );
 
     case 'dayAndSymbol':
-      return isTwoNumber(days)
+      return isDoubleDigits(days)
         ? `${days}D` // '22D'
         : `0${days}D`; // '01D'
 
     case 'hoursAndSymbol':
-      return isTwoNumber(hours)
+      return isDoubleDigits(hours)
         ? `${hours}H` // '22H'
         : `0${hours}H`; // '01H'
 

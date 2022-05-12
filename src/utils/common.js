@@ -48,7 +48,7 @@ const getDays = (time) => Math.floor(
     / HOURS_IN_DAY
 );
 
-const isTwoNumber = (value) => value.toString().length === 2;
+const isDoubleDigits = (value) => value.toString().length === 2;
 
 const getDifferenceMilliseconds = ({timeStart, timeEnd}) => (
   dayjs(timeEnd).diff(dayjs(timeStart))
@@ -62,7 +62,7 @@ export {
   getRandomInteger,
   getRandomValueArray,
   getTextFinalSay,
-  isTwoNumber,
+  isDoubleDigits,
   makeCounter,
   transformFirstLetterWordUppercase,
 };
