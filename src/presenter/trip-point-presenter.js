@@ -1,8 +1,10 @@
 import FormEditView from '../view/form-edit-view';
 import RoutePointView from '../view/route-point-view';
+
 import {
   render,
   replace,
+  remove,
 } from '../framework/render';
 export default class tripItemPresenter {
   #tripListContainer = null;
@@ -21,6 +23,9 @@ export default class tripItemPresenter {
     this.#trip = trip;
     this.#offers = offers;
 
+    const prevTripPointComponent = this.#tripPointComponent;
+    const prevFormEditComponent = this.#formEditComponent;
+
     this.#tripPointComponent = new RoutePointView(this.#trip, this.#offers);
     this.#formEditComponent = new FormEditView(this.#trip, this.#offers);
 
@@ -29,7 +34,28 @@ export default class tripItemPresenter {
     this.#formEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formEditComponent.setEditClickHandler(this.#handleRollClick);
 
-    render(this.#tripPointComponent, this.#tripListContainer);
+    if (prevTripPointComponent === null || prevFormEditComponent === null) {
+      render(this.#tripPointComponent, this.#tripListContainer);
+      return;
+    }
+
+    // Проверка на наличие в DOM необходима,
+    // чтобы не пытаться заменить то, что не было отрисовано
+    if (this.#tripListContainer.contains(prevTripPointComponent.element)) {
+      replace(this.#tripPointComponent, prevTripPointComponent);
+    }
+
+    if (this.#tripListContainer.contains(prevFormEditComponent.element)) {
+      replace(this.#formEditComponent, prevFormEditComponent);
+    }
+
+    remove(prevTripPointComponent);
+    remove(prevFormEditComponent);
+  };
+
+  destroy = () => {
+    remove(this.#formEditComponent);
+    remove(this.#tripPointComponent);
   };
 
   #escKeyDownHandler = (evt) => {
