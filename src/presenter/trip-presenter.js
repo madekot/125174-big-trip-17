@@ -4,6 +4,7 @@ import RoutePointView from '../view/route-point-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
 import {
+  RenderPosition,
   remove,
   render,
   replace,
@@ -13,6 +14,8 @@ export default class TripsPresenter {
   #tripsModel = null;
 
   #tripListComponent = new TripListView();
+  #sortingComponent = new SortingView();
+  #noTripComponent = new NoTripView();
 
   #dataTrips = [];
   #dataOffers = [];
@@ -72,16 +75,31 @@ export default class TripsPresenter {
     render(pointComponent, this.#tripListComponent.element);
   };
 
-  #renderBoard = () => {
-    render(new SortingView(), this.#boardContainer);
-    render(this.#tripListComponent, this.#boardContainer);
+  #renderSort = () => {
+    render(this.#sortingComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+  };
 
-    if (this.#dataTrips.length) {
-      for (let i = 0; i < this.#dataTrips.length; i++) {
-        this.#renderTrip(this.#dataTrips[i], this.#dataOffers[i]);
-      }
-    } else {
-      render(new NoTripView(), this.#boardContainer);
+  #renderTrips = () => {
+    this.#dataTrips.forEach((trip, i) => this.#renderTrip(trip, this.#dataOffers[i]));
+  };
+
+  #renderTripList = () => {
+    render(this.#tripListComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    this.#renderTrips();
+  };
+
+  #renderNoTrip = () => {
+    render(this.#noTripComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+  };
+
+  #renderBoard = () => {
+    this.#renderSort();
+
+    if (!this.#dataTrips.length) {
+      this.#renderNoTrip();
+      return;
     }
+
+    this.#renderTripList();
   };
 }
