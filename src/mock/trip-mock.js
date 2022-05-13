@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 import {
   getRandomBoolean,
@@ -68,8 +69,7 @@ const generatePoint = () => {
   const offers = Array.from({length: OFFERS_QUANTITY}, () => getIdCounter());
   const type = getRandomValueArray(TYPES);
   const isFavorite = getRandomBoolean();
-  const getIdPoint = makeCounter();
-  const id = getIdPoint();
+  const id = nanoid();
 
   return ({
     basePrice: 1100,
@@ -89,15 +89,17 @@ const generatePointLocal = () => {
   const isFavorite = getRandomBoolean();
   const type = getRandomValueArray(TYPES);
   const offers = ID_DEFAULT_LIST;
+  const id = nanoid();
 
   return ({
     basePrice,
     dateFrom: dayjs().toISOString(),
     dateTo: dayjs().add(DURATION_TRIP_MINUTES, 'minute').toISOString(),
     destination,
+    id,
     isFavorite,
     offers,
-    type
+    type,
   });
 };
 

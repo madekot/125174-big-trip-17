@@ -16,6 +16,8 @@ export default class TripsPresenter {
   #sortingComponent = new SortingView();
   #noTripComponent = new NoTripView();
 
+  #tripPointPresenter = new Map();
+
   #dataTrips = [];
   #dataOffers = [];
 
@@ -34,6 +36,7 @@ export default class TripsPresenter {
   #renderTrip = (point, offers) => {
     const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element);
     tripPointPresenter.init(point, offers);
+    this.#tripPointPresenter.set(point.id, tripPointPresenter);
   };
 
   #renderSort = () => {
@@ -42,6 +45,11 @@ export default class TripsPresenter {
 
   #renderTrips = () => {
     this.#dataTrips.forEach((trip, i) => this.#renderTrip(trip, this.#dataOffers[i]));
+  };
+
+  #clearTripList = () => {
+    this.#tripPointPresenter.forEach((presenter) => presenter.destroy());
+    this.#tripPointPresenter.clear();
   };
 
   #renderTripList = () => {
