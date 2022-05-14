@@ -8,6 +8,9 @@ import {
   RenderPosition,
   render,
 } from '../framework/render';
+
+import {updateItem} from '../utils/common';
+
 export default class TripsPresenter {
   #boardContainer = null;
   #tripsModel = null;
@@ -37,6 +40,11 @@ export default class TripsPresenter {
     const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element);
     tripPointPresenter.init(point, offers);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
+  };
+
+  #handleTripChange = (updatedTrip) => {
+    this.#dataTrips = updateItem(this.#dataTrips, updatedTrip);
+    this.#tripPointPresenter.get(updatedTrip.id).init(updatedTrip);
   };
 
   #renderSort = () => {
