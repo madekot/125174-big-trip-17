@@ -8,6 +8,7 @@ import {
 } from '../framework/render';
 export default class tripItemPresenter {
   #tripListContainer = null;
+  #changeData = null;
 
   #formEditComponent = null;
   #tripPointComponent = null;
@@ -15,8 +16,9 @@ export default class tripItemPresenter {
   #trip = null;
   #offers = null;
 
-  constructor(tripListContainer) {
+  constructor(tripListContainer, changeData) {
     this.#tripListContainer = tripListContainer;
+    this.#changeData = changeData;
   }
 
   init = (trip, offers) => {
@@ -26,10 +28,12 @@ export default class tripItemPresenter {
     const prevTripPointComponent = this.#tripPointComponent;
     const prevFormEditComponent = this.#formEditComponent;
 
-    this.#tripPointComponent = new RoutePointView(this.#trip, this.#offers);
-    this.#formEditComponent = new FormEditView(this.#trip, this.#offers);
+    this.#tripPointComponent = new RoutePointView(trip, offers);
+    this.#formEditComponent = new FormEditView(trip, offers);
 
     this.#tripPointComponent.setEditClickHandler(this.#handleEditClick);
+    this.#tripPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    // this.#tripPointComponent.setArchiveClickHandler(this.#handleArchiveClick);
 
     this.#formEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formEditComponent.setEditClickHandler(this.#handleRollClick);
@@ -69,12 +73,17 @@ export default class tripItemPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (trip) => {
+    this.#changeData(trip);
     this.#replaceFormToPoint();
   };
 
   #handleRollClick = () => {
     this.#replaceFormToPoint();
+  };
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#trip, isFavorite: !this.#trip.isFavorite});
   };
 
   #replaceFormToPoint = () => {

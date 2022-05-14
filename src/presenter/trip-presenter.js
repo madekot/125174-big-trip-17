@@ -37,7 +37,7 @@ export default class TripsPresenter {
   };
 
   #renderTrip = (point, offers) => {
-    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element);
+    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element, this.#handleTripChange);
     tripPointPresenter.init(point, offers);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
   };
