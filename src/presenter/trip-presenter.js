@@ -3,12 +3,7 @@ import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
 
 import TripPointPresenter from './trip-point-presenter';
-
-import {
-  RenderPosition,
-  render,
-} from '../framework/render';
-
+import {RenderPosition, render,} from '../framework/render';
 import {updateItem} from '../utils/common';
 
 export default class TripsPresenter {
@@ -37,9 +32,15 @@ export default class TripsPresenter {
   };
 
   #renderTrip = (point, offers) => {
-    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element, this.#handleTripChange);
+    const tripPointPresenter = new TripPointPresenter(
+      this.#tripListComponent.element, this.#handleTripChange, this.#handleModeChange
+    );
     tripPointPresenter.init(point, offers);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
+  };
+
+  #handleModeChange = () => {
+    this.#tripPointPresenter.forEach((presenter) => presenter.resetView());
   };
 
   #handleTripChange = (updatedTrip) => {

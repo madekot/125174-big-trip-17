@@ -14,6 +14,11 @@ const timestamp = {
   DAY: 86400000,
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 const FILTER_DEFAULT = [
   {name: 'everything', checked: true ,},
   {name: 'future'    , checked: false,},
@@ -97,6 +102,7 @@ export {
   MILLISECONDS_IN_SECOND,
   MINUTES_IN_HOUR,
   MOCK_QUANTITY,
+  Mode,
   OFFERS_DEFAULT,
   OFFERS_QUANTITY,
   OFFER_PRICES,
