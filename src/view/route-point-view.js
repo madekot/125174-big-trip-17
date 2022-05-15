@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { getDateFrom, getDateDifference, getOffersEqualCurrentType, convertIdToOffers } from '../utils/trips';
+import { humanizeDate, getDateDifference, getOffersEqualCurrentType, convertIdToOffers, } from '../utils/trips';
 import { transformFirstLetterWordUppercase, } from '../utils/common';
 
 const createSelectedOfferItem = (offer = {}) => {
@@ -20,12 +20,12 @@ const createSelectedOffers = (data) => data.map(
 ).join('');
 
 const createPointTemplate = (point = {}, offers = {}) => {
-  const getHoursMinutes = (time) => getDateFrom(time, {type: 'hoursMinutes'});
-  const getMonthDay = (time) => getDateFrom(time, {type: 'monthDay'});
-  const getTimeDuration = () => getDateDifference({first: point.dateFrom, second: point.dateTo});
+  const getHoursMinutes = (time) => humanizeDate(time, {type: 'hoursMinute'});
+  const getMonthDay = (time) => humanizeDate(time, {type: 'nameMonthNumberedDay'});
+  const getTimeDuration = () => getDateDifference({timeStart: point.dateFrom, timeEnd: point.dateTo});
 
   const basePrice = point.basePrice || 600;
-  const dateTitleFromHuman = getMonthDay();
+  const dateTitleFromHuman = getMonthDay(point.dateFrom);
   const dateTitleMachine = point.date || '2019-03-18';
   const isFavorite = point.isFavorite ? 'event__favorite-btn--active' : '';
   const timeDuration = point.dateFrom ? getTimeDuration() : '40M';
@@ -103,8 +103,18 @@ export default class RoutePointView extends AbstractView {
       .addEventListener('click', this.#clickHandler);
   };
 
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  };
+
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }
