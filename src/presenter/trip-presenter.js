@@ -48,8 +48,16 @@ export default class TripPresenter {
     this.#tripPointPresenter.get(updatedTrip.id).init(updatedTrip);
   };
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+    console.log(sortType);
+  };
+
   #renderSort = () => {
     render(this.#sortingComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    this.#sortingComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderTrips = () => {
