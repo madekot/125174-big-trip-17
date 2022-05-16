@@ -6,7 +6,7 @@ import TripPointPresenter from './trip-point-presenter';
 import {RenderPosition, render,} from '../framework/render';
 import {updateItem} from '../utils/common';
 
-export default class TripsPresenter {
+export default class TripPresenter {
   #boardContainer = null;
   #tripsModel = null;
 

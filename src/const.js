@@ -19,6 +19,14 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  OFFER: 'offer',
+  PRICE: 'price',
+  TIME: 'time',
+};
+
 const FILTER_DEFAULT = [
   {name: 'everything', checked: true ,},
   {name: 'future'    , checked: false,},
@@ -75,11 +83,11 @@ const OFFERS_DEFAULT = [
 ];
 
 const SORTING_DEFAULT_LIST = [
-  { name: 'day'   , disabled: false , checked: false },
-  { name: 'event' , disabled: true  , checked: false },
-  { name: 'time'  , disabled: false , checked: false },
-  { name: 'price' , disabled: false , checked: true  },
-  { name: 'offer' , disabled: true  , checked: false },
+  { name: 'day'   , disabled: false , checked: false, sortType: 'day'   },
+  { name: 'event' , disabled: true  , checked: false, sortType: 'event' },
+  { name: 'time'  , disabled: false , checked: false, sortType: 'time'  },
+  { name: 'price' , disabled: false , checked: true , sortType: 'price' },
+  { name: 'offer' , disabled: true  , checked: false, sortType: 'offer' },
 ];
 
 const CITY_PICTURES = [
@@ -109,6 +117,7 @@ export {
   OFFER_TITLES,
   SECONDS_IN_MINUTE,
   SORTING_DEFAULT_LIST,
+  SortType,
   TYPES,
   timestamp,
 };
