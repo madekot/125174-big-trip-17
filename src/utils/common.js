@@ -31,6 +31,12 @@ const getTextFinalSay = (str) => str.split(' ').pop();
 
 const getRandomBoolean = () => Math.random() < 0.5;
 
+const getRandomDayStart = (time = dayjs()) => (
+  getRandomBoolean()
+    ? time.subtract(getRandomBoolean(), 'day')
+    : time.add(getRandomBoolean(), 'day')
+);
+
 const getHours = (time) => Math.trunc(
   time
   / MILLISECONDS_IN_SECOND
@@ -73,6 +79,7 @@ export {
   getDifferenceMilliseconds,
   getHours,
   getRandomBoolean,
+  getRandomDayStart,
   getRandomInteger,
   getRandomValueArray,
   getTextFinalSay,

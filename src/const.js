@@ -1,8 +1,9 @@
-const MOCK_QUANTITY = 3;
+const MOCK_QUANTITY = 6;
 const OFFERS_QUANTITY = 7;
 const BASE_PRICE_MAX = 9999;
 const BASE_PRICE_MIN = 100;
-const DURATION_TRIP_MINUTES = 888*2;
+const DURATION_MAX_MINUTES_TRIP = 10;
+const DURATION_MIN_MINUTES_TRIP = 1000;
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -21,8 +22,7 @@ const Mode = {
 
 const SortType = {
   DAY: 'day',
-  EVENT: 'event',
-  OFFER: 'offer',
+  DEFAULT: 'day',
   PRICE: 'price',
   TIME: 'time',
 };
@@ -83,11 +83,11 @@ const OFFERS_DEFAULT = [
 ];
 
 const SORTING_DEFAULT_LIST = [
-  { name: 'day'   , disabled: false , checked: false, sortType: 'day'   },
-  { name: 'event' , disabled: true  , checked: false, sortType: 'event' },
-  { name: 'time'  , disabled: false , checked: false, sortType: 'time'  },
-  { name: 'price' , disabled: false , checked: true , sortType: 'price' },
-  { name: 'offer' , disabled: true  , checked: false, sortType: 'offer' },
+  { name: 'day'   , disabled: false , checked: true  , sortType: 'day'   },
+  { name: 'event' , disabled: true  , checked: false , sortType: 'event' },
+  { name: 'time'  , disabled: false , checked: false , sortType: 'time'  },
+  { name: 'price' , disabled: false , checked: false , sortType: 'price' },
+  { name: 'offer' , disabled: true  , checked: false , sortType: 'offer' },
 ];
 
 const CITY_PICTURES = [
@@ -103,7 +103,7 @@ export {
   CITY_DESCRIPTIONS,
   CITY_NAMES,
   CITY_PICTURES,
-  DURATION_TRIP_MINUTES,
+  DURATION_MAX_MINUTES_TRIP,
   FILTER_DEFAULT,
   HOURS_IN_DAY,
   ID_DEFAULT_LIST,
@@ -120,4 +120,5 @@ export {
   SortType,
   TYPES,
   timestamp,
+  DURATION_MIN_MINUTES_TRIP,
 };

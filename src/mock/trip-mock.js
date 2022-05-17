@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid';
 
 import {
   getRandomBoolean,
+  getRandomDayStart,
   getRandomInteger,
   getRandomValueArray,
   makeCounter,
@@ -14,7 +15,8 @@ import {
   CITY_DESCRIPTIONS,
   CITY_NAMES,
   CITY_PICTURES,
-  DURATION_TRIP_MINUTES,
+  DURATION_MAX_MINUTES_TRIP,
+  DURATION_MIN_MINUTES_TRIP,
   ID_DEFAULT_LIST,
   OFFERS_QUANTITY,
   OFFER_PRICES,
@@ -90,11 +92,16 @@ const generatePointLocal = () => {
   const type = getRandomValueArray(TYPES);
   const offers = ID_DEFAULT_LIST;
   const id = nanoid();
+  const dateFrom = getRandomDayStart().toISOString();
+  const dateTo = dayjs().add(
+    getRandomInteger(DURATION_MIN_MINUTES_TRIP, DURATION_MAX_MINUTES_TRIP),
+    'minute'
+  ).toISOString();
 
   return ({
     basePrice,
-    dateFrom: dayjs().toISOString(),
-    dateTo: dayjs().add(DURATION_TRIP_MINUTES, 'minute').toISOString(),
+    dateFrom,
+    dateTo,
     destination,
     id,
     isFavorite,
