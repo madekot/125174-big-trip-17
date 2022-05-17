@@ -7,7 +7,7 @@ import {
   remove,
 } from '../framework/render';
 import {Mode} from '../const';
-export default class tripItemPresenter {
+export default class TripPointPresenter {
   #tripListContainer = null;
 
   #changeData = null;
