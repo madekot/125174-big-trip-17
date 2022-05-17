@@ -49,11 +49,14 @@ export default class SortingView extends AbstractView {
   };
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'LABEL') {
+    const inputElement = evt.target.previousElementSibling;
+
+    if (evt.target.tagName !== 'LABEL' || inputElement.disabled) {
       return;
     }
 
     evt.preventDefault();
+    inputElement.checked = true;
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   };
 }
