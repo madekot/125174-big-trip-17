@@ -125,9 +125,33 @@ const convertIdToOffers = ({offersList, idList}) => {
   return arrC;
 };
 
+const sortTripDay = (tripA, tripB) => (
+  getDifferenceMilliseconds(
+    {timeStart: tripA.dateFrom, timeEnd: tripB.dateFrom}
+  )
+);
+
+const sortTripPrice = (tripA, tripB) => (
+  tripB.basePrice - tripA.basePrice
+);
+
+const sortTripTime = (tripA, tripB) => {
+  const aTripDuration = getDifferenceMilliseconds(
+    {timeStart: tripA.dateFrom, timeEnd: tripA.dateTo}
+  );
+  const bTripDuration = getDifferenceMilliseconds(
+    {timeStart: tripB.dateFrom, timeEnd: tripB.dateTo}
+  );
+  return bTripDuration - aTripDuration;
+};
+
+
 export {
   convertIdToOffers,
   getDateDifference,
   getOffersEqualCurrentType,
   humanizeDate,
+  sortTripDay,
+  sortTripPrice,
+  sortTripTime,
 };
