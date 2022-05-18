@@ -75,10 +75,10 @@ const createEditForm = (point = {}, offers = {}) => {
   const type = point.type || 'flight';
   const typeIcon = point.type || 'flight';
 
-  const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
+  const getOfferEqualCurrentType = getOffersEqualCurrentType({type, offers});
 
   const offersConverted = convertIdToOffers(
-    {offersList: offerEqualCurrentType.offers, idList: point.offers}
+    {offersList: getOfferEqualCurrentType.offers, idList: point.offers}
   );
 
   const eventTypeItems = createEventTypes({typeChecked: type, types: TYPES});

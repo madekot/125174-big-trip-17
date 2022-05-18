@@ -76,7 +76,7 @@ export default class TripPresenter {
   };
 
   #renderTrips = () => {
-    this.#dataTrips.forEach((trip, i) => this.#renderTrip(trip, this.#dataOffers[i]));
+    this.#dataTrips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers));
   };
 
   #renderTripList = () => {

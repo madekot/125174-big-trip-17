@@ -19,7 +19,7 @@ const createSelectedOffers = (data) => data.map(
   (item) => createSelectedOfferItem(item)
 ).join('');
 
-const createPointTemplate = (point = {}, offers = {}) => {
+const createPointTemplate = (point = {}, offers = []) => {
   const getHoursMinutes = (time) => humanizeDate(time, {type: 'hoursMinute'});
   const getMonthDay = (time) => humanizeDate(time, {type: 'nameMonthNumberedDay'});
   const getTimeDuration = () => getDateDifference({timeStart: point.dateFrom, timeEnd: point.dateTo});
