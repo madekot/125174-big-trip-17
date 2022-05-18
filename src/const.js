@@ -83,11 +83,11 @@ const OFFERS_DEFAULT = [
 ];
 
 const SORTING_DEFAULT_LIST = [
-  { name: 'day'   , disabled: false , checked: true  , sortType: 'day'   },
-  { name: 'event' , disabled: true  , checked: false , sortType: 'event' },
-  { name: 'time'  , disabled: false , checked: false , sortType: 'time'  },
-  { name: 'price' , disabled: false , checked: false , sortType: 'price' },
-  { name: 'offer' , disabled: true  , checked: false , sortType: 'offer' },
+  { name: 'day'   , disabled: false , sortType: 'day'   },
+  { name: 'event' , disabled: true  , sortType: 'event' },
+  { name: 'time'  , disabled: false , sortType: 'time'  },
+  { name: 'price' , disabled: false , sortType: 'price' },
+  { name: 'offer' , disabled: true  , sortType: 'offer' },
 ];
 
 const CITY_PICTURES = [
