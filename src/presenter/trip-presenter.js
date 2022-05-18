@@ -3,7 +3,7 @@ import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
 
 import TripPointPresenter from './trip-point-presenter';
-import {RenderPosition, render,} from '../framework/render';
+import {render,} from '../framework/render';
 import {SortType} from '../const';
 
 import {
@@ -71,7 +71,7 @@ export default class TripPresenter {
   };
 
   #renderSort = () => {
-    render(this.#sortingComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#sortingComponent, this.#boardContainer);
     this.#sortingComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
@@ -80,12 +80,12 @@ export default class TripPresenter {
   };
 
   #renderTripList = () => {
-    render(this.#tripListComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#tripListComponent, this.#boardContainer);
     this.#renderTrips();
   };
 
   #renderNoTrip = () => {
-    render(this.#noTripComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#noTripComponent, this.#boardContainer);
   };
 
   #renderBoard = () => {
