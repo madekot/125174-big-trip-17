@@ -20,7 +20,6 @@ import {
   ID_DEFAULT_LIST,
   OFFERS_QUANTITY,
   OFFER_PRICES,
-  OFFER_TITLES,
   TYPES,
 } from '../const';
 
@@ -39,17 +38,19 @@ const generateDestination = () => (
 const generateOfferItem = ({index}) => {
   const getId = makeCounter();
 
-  const getOfferElement = () => (
+  const getOfferElement = (typeName , i) => (
     {
       id: getId(),
       price: getRandomValueArray(OFFER_PRICES),
-      title: getRandomValueArray(OFFER_TITLES),
+      title: `offer-${typeName}-№${i + 1}`,
     }
   );
 
-  const offerItem = Array.from({length: OFFERS_QUANTITY}, getOfferElement);
-  const offers = offerItem;
   const type = TYPES[index];
+  const offerItem = Array(OFFERS_QUANTITY).fill(' ').map(
+    (el, i) => getOfferElement(type, i));
+
+  const offers = offerItem;
 
   return ({
     offers,

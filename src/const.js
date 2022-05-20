@@ -45,12 +45,6 @@ const TYPES = [
   'restaurant'
 ];
 
-const OFFER_TITLES = [
-  'Upgrade to a business class',
-  'Choose the radio station',
-  'Divan'
-];
-
 const CITY_DESCRIPTIONS = [
   'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -114,7 +108,6 @@ export {
   OFFERS_DEFAULT,
   OFFERS_QUANTITY,
   OFFER_PRICES,
-  OFFER_TITLES,
   SECONDS_IN_MINUTE,
   SORTING_DEFAULT_LIST,
   SortType,
