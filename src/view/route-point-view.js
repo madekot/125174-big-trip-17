@@ -39,11 +39,11 @@ const createPointTemplate = (point = {}, offers = []) => {
 
   const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
 
-  const offersConverted = convertIdToOffers(
+  const checkedOffers = convertIdToOffers(
     {offersList: offerEqualCurrentType.offers, idList: point.offers}
   );
 
-  const selectedOffers = createSelectedOffers(offersConverted);
+  const selectedOffers = createSelectedOffers(checkedOffers);
 
   return(
     `<li class="trip-events__item">
