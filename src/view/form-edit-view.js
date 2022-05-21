@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
 import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
-import { TYPES } from '../const';
+import { TYPES, CITY_NAMES } from '../const';
 
 const createPicturesList = (data) => data.map(
   (pictures) => (
@@ -21,11 +21,12 @@ const createEventTypeItem = (type = {}) => {
   const checked  = type.checked ? 'checked' : '';
   const label = transformFirstLetterWordUppercase(type.name);
   const name = type.name || 'taxi';
+  const typeName = type.name || 'type';
 
   return (
     `<div class="event__type-item">
       <input id="event-type-${name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${name}" ${checked}>
-      <label class="event__type-label  event__type-label--${name}" for="event-type-${name}-1">${label}</label>
+      <label class="event__type-label  event__type-label--${name}" for="event-type-${name}-1" data-type="${typeName}">${label}</label>
     </div>`
   );
 };
@@ -83,6 +84,18 @@ const createOfferSection = (offers) => {
   );
 };
 
+const createDestinationList = (cities) => {
+  const citiesTemplate = cities.map((city) =>
+    `<option value="${city}"></option>`
+  ).join(' ');
+
+  return (`
+    <datalist id="destination-list-1">
+      ${citiesTemplate}
+    </datalist>
+  `);
+};
+
 const createEditForm = (point = {}) => {
   const basePrice = point.basePrice || 0;
   const offers = point.offers?.length ? point.offers : [];
@@ -99,6 +112,7 @@ const createEditForm = (point = {}) => {
   const eventTypeItemsTemplate = createEventTypes({typeChecked: type, types: TYPES});
   const picturesTemplate = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
   const offerTemplate = createOfferSection(offers);
+  const destinationListTemplate = createDestinationList(CITY_NAMES);
 
   return(
     `<li class="trip-events__item">
@@ -128,11 +142,9 @@ const createEditForm = (point = {}) => {
 
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
-            <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
-            </datalist>
+
+            ${destinationListTemplate}
+
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -174,14 +186,21 @@ const createEditForm = (point = {}) => {
   );
 };
 export default class FormEditView extends AbstractStatefulView {
-  constructor(point, offers) {
+  constructor(point, offers, destinations) {
     super();
-    this._state = FormEditView.parsePointToState(point, offers);
+    this._state = FormEditView.parsePointToState(point, offers, destinations);
+    this.#setInnerHandlers();
   }
 
   get template() {
     return createEditForm(this._state);
   }
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setEditClickHandler(this._callback.click);
+    this.setFormSubmitHandler(this._callback.submit);
+  };
 
   setEditClickHandler = (callback) => {
     this._callback.click = callback;
@@ -204,6 +223,20 @@ export default class FormEditView extends AbstractStatefulView {
       .addEventListener('click', this.#deleteClickHandler);
   };
 
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list')
+      .addEventListener('click', this.#changeTypeClickHandler);
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('input', this.#cityInputHandler);
+
+    this.element.querySelector('#event-start-time-1')
+      .addEventListener('input', this.#dataStartInputHandler);
+
+    this.element.querySelector('#event-end-time-1')
+      .addEventListener('input', this.#dataEndInputHandler);
+  };
+
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
@@ -218,6 +251,58 @@ export default class FormEditView extends AbstractStatefulView {
     evt.preventDefault();
     this._callback.deleteClick();
   };
+
+  #changeTypeClickHandler = (evt) => {
+    evt.preventDefault();
+
+    if (evt.target.tagName !== 'LABEL') {
+      return;
+    }
+
+    const type = evt.target.dataset.type;
+
+    const offers = getOffersEqualCurrentType(
+      {
+        type,
+        offers: this._state.allOffers
+      }).offers;
+
+    this.updateElement({
+      type,
+      offers,
+    });
+  };
+
+  #cityInputHandler = (evt) => {
+    evt.preventDefault();
+    const cityName = evt.target.value;
+
+    this._setState({
+      destination: {
+        name: cityName,
+      },
+    });
+
+    if (!CITY_NAMES.includes(cityName)) {
+      return;
+    }
+
+    const destinationIndex = this._state.allDestinations.map(
+      (destination) => destination.name
+    ).indexOf(cityName);
+
+    const newDestination = this._state.allDestinations[destinationIndex];
+
+    this.updateElement({
+      destination: newDestination,
+    });
+  };
+
+  #dataStartInputHandler = () => {};
+
+  #dataEndInputHandler = () => {};
+
+  #priceInputHandler = () => {};
 
   static convertIdListToOffers = ({offersList, idList}) => {
     let result = [];
@@ -237,23 +322,33 @@ export default class FormEditView extends AbstractStatefulView {
     offersList.filter((item) => item.isChecked).map(({id}) => id)
   );
 
-  static parsePointToState = (point, offers) => {
-    const offerEqualCurrentType = getOffersEqualCurrentType({type: point.type, offers}).offers;
-    const convertedIdListToOffers = FormEditView.convertIdListToOffers({offersList: offerEqualCurrentType, idList: point.offers});
+  static parsePointToState = (point, offers, destinations) => {
+    const offerEqualCurrentType = getOffersEqualCurrentType({
+      type: point.type,
+      offers
+    }).offers;
 
-    return (
-      {
-        ...point,
-        offers: convertedIdListToOffers,
-        allOffersType: offers,
-      }
-    );
+    const convertedIdListToOffers = FormEditView.convertIdListToOffers({
+      offersList: offerEqualCurrentType, idList: point.offers
+    });
+
+    return ({
+      ...point,
+      offers: convertedIdListToOffers,
+      allOffers: offers,
+      allDestinations: destinations,
+    });
   };
 
-  static parseStateToPoint = (state) => (
-    {
+  static parseStateToPoint = (state) => {
+    const point = {
       ...state,
       offers: FormEditView.convertOffersToIdList(state.offers)
-    }
-  );
+    };
+
+    delete point.allOffers;
+    delete point.allDestinations;
+
+    return point;
+  };
 }
