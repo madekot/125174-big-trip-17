@@ -1,4 +1,4 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
 import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
 import { TYPES } from '../const';
@@ -65,40 +65,40 @@ const createOfferSelectors = (offers) => offers.map(
   (item) => createOfferSelectorItem(item)
 ).join('');
 
-const createEditForm = (point = {}, offers = []) => {
+const createOfferSection = (offers) => {
+  if (!offers?.length) {
+    return '';
+  }
+
+  const offerSelectorsTemplate = createOfferSelectors(offers);
+  return (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">offers</h3>
+      <div class="event__available-offers">
+
+        ${offerSelectorsTemplate}
+
+      </div>
+    </section>`
+  );
+};
+
+const createEditForm = (point = {}) => {
   const basePrice = point.basePrice || 0;
+  const offers = point.offers?.length ? point.offers : [];
+
   const dateFrom = humanizeDate(point.dateFrom);
   const dateTo = humanizeDate(point.dateTo);
+
   const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
   const destinationName = point.destination?.name || 'destination';
   const offersLabel = point.type || 'flight';
   const type = point.type || 'flight';
   const typeIcon = point.type || 'flight';
 
-  const offerEqualCurrentType = getOffersEqualCurrentType({type, offers}).offers;
-
-
-  const setCheckedOffer = ({offersList, idList}) => {
-    let result = [];
-
-    offersList.forEach((offer) => {
-      if (idList.includes(offer.id)) {
-        result = [...result, {...offer, isChecked: true}];
-      } else {
-        result = [...result, {...offer, isChecked: false}];
-      }
-    });
-
-    return result;
-  };
-
-  const updatedOffers = setCheckedOffer(
-    {offersList: offerEqualCurrentType, idList: point.offers}
-  );
-
-  const eventTypeItems = createEventTypes({typeChecked: type, types: TYPES});
-  const offerSelectors = createOfferSelectors(updatedOffers);
-  const pictures = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
+  const eventTypeItemsTemplate = createEventTypes({typeChecked: type, types: TYPES});
+  const picturesTemplate = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
+  const offerTemplate = createOfferSection(offers);
 
   return(
     `<li class="trip-events__item">
@@ -115,7 +115,7 @@ const createEditForm = (point = {}, offers = []) => {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
 
-                ${eventTypeItems}
+                ${eventTypeItemsTemplate}
 
               </fieldset>
             </div>
@@ -158,21 +158,14 @@ const createEditForm = (point = {}, offers = []) => {
           </button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">offers</h3>
 
-            <div class="event__available-offers">
-
-              ${offerSelectors}
-
-            </div>
-          </section>
+          ${offerTemplate}
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">destination</h3>
             <p class="event__destination-description">${destinationDescription}</p>
 
-            ${pictures}
+            ${picturesTemplate}
 
           </section>
         </section>
@@ -181,18 +174,13 @@ const createEditForm = (point = {}, offers = []) => {
   );
 };
 export default class FormEditView extends AbstractStatefulView {
-  #point = null;
-  #offers = null;
-
   constructor(point, offers) {
     super();
-    this.#point = point;
-    this.#offers = offers;
-    this._state = FormEditView.parsePointToState(point);
+    this._state = FormEditView.parsePointToState(point, offers);
   }
 
   get template() {
-    return createEditForm(this.#point, this.#offers);
+    return createEditForm(this._state);
   }
 
   setEditClickHandler = (callback) => {
@@ -223,7 +211,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submit(this.#point);
+    this._callback.submit(FormEditView.parseStateToPoint(this._state));
   };
 
   #deleteClickHandler = (evt) => {
@@ -231,7 +219,41 @@ export default class FormEditView extends AbstractStatefulView {
     this._callback.deleteClick();
   };
 
-  static parsePointToState = (point) => ({...point,
-    isDueDate: point.dueDate !== null,
-  });
+  static convertIdListToOffers = ({offersList, idList}) => {
+    let result = [];
+
+    offersList.forEach((offer) => {
+      if (idList.includes(offer.id)) {
+        result = [...result, {...offer, isChecked: true}];
+      } else {
+        result = [...result, {...offer, isChecked: false}];
+      }
+    });
+
+    return result;
+  };
+
+  static convertOffersToIdList = (offersList) => (
+    offersList.filter((item) => item.isChecked).map(({id}) => id)
+  );
+
+  static parsePointToState = (point, offers) => {
+    const offerEqualCurrentType = getOffersEqualCurrentType({type: point.type, offers}).offers;
+    const convertedIdListToOffers = FormEditView.convertIdListToOffers({offersList: offerEqualCurrentType, idList: point.offers});
+
+    return (
+      {
+        ...point,
+        offers: convertedIdListToOffers,
+        allOffersType: offers,
+      }
+    );
+  };
+
+  static parseStateToPoint = (state) => (
+    {
+      ...state,
+      offers: FormEditView.convertOffersToIdList(state.offers)
+    }
+  );
 }
