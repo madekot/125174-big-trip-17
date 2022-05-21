@@ -6,9 +6,12 @@ import {
 import {MOCK_QUANTITY} from '../const';
 
 export default class TripsModel {
+  #destinations = Array(MOCK_QUANTITY).fill('').map(
+    (el, index) => generateDestination(index)
+  );
+
   #trips = Array.from({length: MOCK_QUANTITY}, generatePointLocal);
   #offers = generateOffers();
-  #destinations = Array.from({length: MOCK_QUANTITY}, generateDestination);
 
   get trips() {
     return this.#trips;

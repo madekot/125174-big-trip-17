@@ -26,6 +26,7 @@ export default class TripPresenter {
 
   #dataTrips = [];
   #dataOffers = [];
+  #dataDestinations = [];
   #sourcedBoardTrips = [];
 
   constructor(boardContainer, tripsModel) {
@@ -36,17 +37,18 @@ export default class TripPresenter {
   init = () => {
     this.#dataTrips = [...this.#tripsModel.trips];
     this.#dataOffers = [...this.#tripsModel.offers];
+    this.#dataDestinations = [...this.#tripsModel.destinations];
 
     this.#sourcedBoardTrips = [...this.#tripsModel.trips];
 
     this.#renderBoard();
   };
 
-  #renderTrip = (point, offers) => {
+  #renderTrip = (point, offers, destinations) => {
     const tripPointPresenter = new TripPointPresenter(
       this.#tripListComponent.element, this.#handleTripChange, this.#handleModeChange
     );
-    tripPointPresenter.init(point, offers);
+    tripPointPresenter.init(point, offers, destinations);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
   };
 
@@ -76,7 +78,7 @@ export default class TripPresenter {
   };
 
   #renderTrips = () => {
-    this.#dataTrips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers));
+    this.#dataTrips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers, this.#dataDestinations));
   };
 
   #renderTripList = () => {

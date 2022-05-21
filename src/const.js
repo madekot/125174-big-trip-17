@@ -46,15 +46,48 @@ const TYPES = [
 ];
 
 const CITY_DESCRIPTIONS = [
-  'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Aliquam id orci ut lectus varius viverra.'
+  'Chamonix, descriptions',
+  'Abidjan, descriptions',
+  'Dakar, descriptions',
+  'Chamonix-2, descriptions',
+  'Abidjan-2, descriptions',
+  'Dakar-2, descriptions',
 ];
 
 const CITY_NAMES = [
   'Chamonix',
   'Abidjan',
-  'Dakar'
+  'Dakar',
+  'Chamonix-2',
+  'Abidjan-2',
+  'Dakar-2',
+];
+
+const CITY_PICTURES = [
+  {
+    description: 'Chamonix description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Abidjan description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Dakar description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Chamonix-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Abidjan-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Dakar-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
 ];
 
 const OFFER_PRICES = [
@@ -82,13 +115,6 @@ const SORTING_DEFAULT_LIST = [
   { name: 'time'  , disabled: false , sortType: 'time'  },
   { name: 'price' , disabled: false , sortType: 'price' },
   { name: 'offer' , disabled: true  , sortType: 'offer' },
-];
-
-const CITY_PICTURES = [
-  {
-    description: 'Chamonix parliament building',
-    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-  },
 ];
 
 export {

@@ -23,16 +23,12 @@ import {
   TYPES,
 } from '../const';
 
-const generateDestination = () => (
-  {
-    description: getRandomBoolean()
-      ? getRandomValueArray(CITY_DESCRIPTIONS)
-      : '',
-    name: getRandomValueArray(CITY_NAMES),
-    pictures: getRandomBoolean()
-      ? Array(3).fill(getRandomValueArray(CITY_PICTURES))
-      : '',
-  }
+const generateDestination = (index) => (
+  ({
+    description: CITY_DESCRIPTIONS[index],
+    name: CITY_NAMES[index],
+    pictures: Array(3).fill(CITY_PICTURES[index]),
+  })
 );
 
 const generateOfferItem = ({index}) => {
@@ -66,29 +62,9 @@ const generateOffers = () => (
     ))
 );
 
-const generatePoint = () => {
-  const destination = generateDestination();
-  const getIdCounter = makeCounter();
-  const offers = Array.from({length: OFFERS_QUANTITY}, () => getIdCounter());
-  const type = getRandomValueArray(TYPES);
-  const isFavorite = getRandomBoolean();
-  const id = nanoid();
-
-  return ({
-    basePrice: 1100,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
-    destination,
-    id,
-    isFavorite,
-    offers,
-    type
-  });
-};
-
 const generatePointLocal = () => {
   const basePrice = getRandomInteger(BASE_PRICE_MIN, BASE_PRICE_MAX);
-  const destination = generateDestination();
+  const destination = generateDestination(getRandomInteger(0, CITY_NAMES.length - 1));
   const isFavorite = getRandomBoolean();
   const type = getRandomValueArray(TYPES);
   const offers = ID_DEFAULT_LIST;
@@ -130,6 +106,5 @@ export {
   generateDestination,
   generateNotFoundError,
   generateOffers,
-  generatePoint,
   generatePointLocal,
 };
