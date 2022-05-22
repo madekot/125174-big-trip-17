@@ -3,6 +3,11 @@ import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
 import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
 import { TYPES, CITY_NAMES } from '../const';
 
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
+
 const createPicturesList = (data) => data.map(
   (pictures) => (
     `<img class="event__photo" src="${pictures.src}" alt="${pictures.description}">`
@@ -52,8 +57,8 @@ const createOfferSelectorItem = (offer = {}) => {
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-1${id}" type="checkbox" name="${name}" ${isChecked}>
-      <label class="event__offer-label" for="event-offer-${name}-1${id}">
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}" ${isChecked}>
+      <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
@@ -100,8 +105,8 @@ const createEditForm = (point = {}) => {
   const basePrice = point.basePrice || 0;
   const offers = point.offers?.length ? point.offers : [];
 
-  const dateFrom = humanizeDate(point.dateFrom);
-  const dateTo = humanizeDate(point.dateTo);
+  const dateFrom = point.dateFrom;
+  const dateTo = point.dateTo;
 
   const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
   const destinationName = point.destination?.name || 'destination';
@@ -186,9 +191,16 @@ const createEditForm = (point = {}) => {
   );
 };
 export default class FormEditView extends AbstractStatefulView {
+  #offers = null;
+  #destinations = null;
+
   constructor(point, offers, destinations) {
     super();
-    this._state = FormEditView.parsePointToState(point, offers, destinations);
+
+    this.#offers = offers;
+    this.#destinations = destinations;
+
+    this._state = FormEditView.parsePointToState(point, this.#offers, this.#destinations);
     this.#setInnerHandlers();
   }
 
@@ -200,6 +212,12 @@ export default class FormEditView extends AbstractStatefulView {
     this.#setInnerHandlers();
     this.setEditClickHandler(this._callback.click);
     this.setFormSubmitHandler(this._callback.submit);
+  };
+
+  reset = (point) => {
+    this.updateElement(
+      FormEditView.parsePointToState(point, this.#offers, this.#destinations),
+    );
   };
 
   setEditClickHandler = (callback) => {
@@ -235,6 +253,12 @@ export default class FormEditView extends AbstractStatefulView {
 
     this.element.querySelector('#event-end-time-1')
       .addEventListener('input', this.#dataEndInputHandler);
+
+    this.element.querySelector('#event-price-1')
+      .addEventListener('input', this.#priceInputHandler);
+
+    this.element.querySelector('.event__available-offers')
+      .addEventListener('click', this.#offerChangeHandler);
   };
 
   #editClickHandler = (evt) => {
@@ -261,11 +285,10 @@ export default class FormEditView extends AbstractStatefulView {
 
     const type = evt.target.dataset.type;
 
-    const offers = getOffersEqualCurrentType(
-      {
-        type,
-        offers: this._state.allOffers
-      }).offers;
+    const offers = getOffersEqualCurrentType({
+      type,
+      offers: this._state.allOffers
+    }).offers;
 
     this.updateElement({
       type,
@@ -298,11 +321,57 @@ export default class FormEditView extends AbstractStatefulView {
     });
   };
 
-  #dataStartInputHandler = () => {};
+  #dataStartInputHandler = (evt) => {
+    evt.preventDefault();
 
-  #dataEndInputHandler = () => {};
+    this._setState({
+      dateFrom: evt.target.value,
+    });
+  };
 
-  #priceInputHandler = () => {};
+  #dataEndInputHandler = (evt) => {
+    evt.preventDefault();
+
+    this._setState({
+      dateTo: evt.target.value,
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
+  #offerChangeHandler = (evt) => {
+    const label = evt.target.closest('label');
+
+    if (!label) {
+      return;
+    }
+
+    const input = label.previousElementSibling;
+    const offers = this._state.offers;
+
+    const updateOfferIndex = offers.findIndex(
+      (offer) => offer.id === +input.id
+    );
+
+    const updateOffer = offers[updateOfferIndex];
+    const isChecked = updateOffer.isChecked = !updateOffer.isChecked;
+
+    const updateOffers = [
+      ...offers.slice(0, updateOfferIndex),
+      {...updateOffer, isChecked},
+      ...offers.slice(updateOfferIndex + 1),
+    ];
+
+    this._setState({
+      offers: updateOffers,
+    });
+  };
 
   static convertIdListToOffers = ({offersList, idList}) => {
     let result = [];
@@ -334,16 +403,22 @@ export default class FormEditView extends AbstractStatefulView {
 
     return ({
       ...point,
-      offers: convertedIdListToOffers,
-      allOffers: offers,
       allDestinations: destinations,
+      allOffers: offers,
+      dateFrom: humanizeDate(point.dateFrom),
+      dateTo: humanizeDate(point.dateTo),
+      offers: convertedIdListToOffers,
     });
   };
 
   static parseStateToPoint = (state) => {
+    const convertHumanizeToIsosDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
+
     const point = {
       ...state,
-      offers: FormEditView.convertOffersToIdList(state.offers)
+      dateFrom: convertHumanizeToIsosDate(state.dateFrom),
+      dateTo: convertHumanizeToIsosDate(state.dateTo),
+      offers: FormEditView.convertOffersToIdList(state.offers),
     };
 
     delete point.allOffers;
