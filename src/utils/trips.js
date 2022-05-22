@@ -96,7 +96,7 @@ const getDateDifference = (options = {}) => {
 };
 
 const getOffersEqualCurrentType = ({type, offers}) => {
-  if (!offers.length) {
+  if (!offers?.length) {
     offers = generateOffers();
   }
 

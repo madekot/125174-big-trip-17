@@ -1,5 +1,5 @@
 const MOCK_QUANTITY = 6;
-const OFFERS_QUANTITY = 7;
+const OFFERS_QUANTITY = 3;
 const BASE_PRICE_MAX = 9999;
 const BASE_PRICE_MIN = 100;
 const DURATION_MAX_MINUTES_TRIP = 10;
@@ -45,22 +45,49 @@ const TYPES = [
   'restaurant'
 ];
 
-const OFFER_TITLES = [
-  'Upgrade to a business class',
-  'Choose the radio station',
-  'Divan'
-];
-
 const CITY_DESCRIPTIONS = [
-  'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Aliquam id orci ut lectus varius viverra.'
+  'Chamonix, descriptions',
+  'Abidjan, descriptions',
+  'Dakar, descriptions',
+  'Chamonix-2, descriptions',
+  'Abidjan-2, descriptions',
+  'Dakar-2, descriptions',
 ];
 
 const CITY_NAMES = [
   'Chamonix',
   'Abidjan',
-  'Dakar'
+  'Dakar',
+  'Chamonix-2',
+  'Abidjan-2',
+  'Dakar-2',
+];
+
+const CITY_PICTURES = [
+  {
+    description: 'Chamonix description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Abidjan description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Dakar description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Chamonix-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Abidjan-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
+  {
+    description: 'Dakar-2 description alt',
+    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+  },
 ];
 
 const OFFER_PRICES = [
@@ -83,18 +110,11 @@ const OFFERS_DEFAULT = [
 ];
 
 const SORTING_DEFAULT_LIST = [
-  { name: 'day'   , disabled: false , checked: true  , sortType: 'day'   },
-  { name: 'event' , disabled: true  , checked: false , sortType: 'event' },
-  { name: 'time'  , disabled: false , checked: false , sortType: 'time'  },
-  { name: 'price' , disabled: false , checked: false , sortType: 'price' },
-  { name: 'offer' , disabled: true  , checked: false , sortType: 'offer' },
-];
-
-const CITY_PICTURES = [
-  {
-    description: 'Chamonix parliament building',
-    src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-  },
+  { name: 'day'   , disabled: false , sortType: 'day'   },
+  { name: 'event' , disabled: true  , sortType: 'event' },
+  { name: 'time'  , disabled: false , sortType: 'time'  },
+  { name: 'price' , disabled: false , sortType: 'price' },
+  { name: 'offer' , disabled: true  , sortType: 'offer' },
 ];
 
 export {
@@ -114,7 +134,6 @@ export {
   OFFERS_DEFAULT,
   OFFERS_QUANTITY,
   OFFER_PRICES,
-  OFFER_TITLES,
   SECONDS_IN_MINUTE,
   SORTING_DEFAULT_LIST,
   SortType,

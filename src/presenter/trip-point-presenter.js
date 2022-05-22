@@ -26,7 +26,7 @@ export default class TripPointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (trip, offers) => {
+  init = (trip, offers, destinations) => {
     this.#trip = trip;
     this.#offers = offers;
 
@@ -34,7 +34,7 @@ export default class TripPointPresenter {
     const prevFormEditComponent = this.#formEditComponent;
 
     this.#tripPointComponent = new RoutePointView(trip, offers);
-    this.#formEditComponent = new FormEditView(trip, offers);
+    this.#formEditComponent = new FormEditView(trip, offers, destinations);
 
     this.#tripPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#tripPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);

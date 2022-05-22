@@ -19,7 +19,7 @@ const createSelectedOffers = (data) => data.map(
   (item) => createSelectedOfferItem(item)
 ).join('');
 
-const createPointTemplate = (point = {}, offers = {}) => {
+const createPointTemplate = (point = {}, offers = []) => {
   const getHoursMinutes = (time) => humanizeDate(time, {type: 'hoursMinute'});
   const getMonthDay = (time) => humanizeDate(time, {type: 'nameMonthNumberedDay'});
   const getTimeDuration = () => getDateDifference({timeStart: point.dateFrom, timeEnd: point.dateTo});
@@ -39,11 +39,11 @@ const createPointTemplate = (point = {}, offers = {}) => {
 
   const offerEqualCurrentType = getOffersEqualCurrentType({type, offers});
 
-  const offersConverted = convertIdToOffers(
+  const checkedOffers = convertIdToOffers(
     {offersList: offerEqualCurrentType.offers, idList: point.offers}
   );
 
-  const selectedOffers = createSelectedOffers(offersConverted);
+  const selectedOffers = createSelectedOffers(checkedOffers);
 
   return(
     `<li class="trip-events__item">

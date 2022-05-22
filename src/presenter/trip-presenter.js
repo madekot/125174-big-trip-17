@@ -3,7 +3,7 @@ import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
 
 import TripPointPresenter from './trip-point-presenter';
-import {RenderPosition, render,} from '../framework/render';
+import {render,} from '../framework/render';
 import {SortType} from '../const';
 
 import {
@@ -26,6 +26,7 @@ export default class TripPresenter {
 
   #dataTrips = [];
   #dataOffers = [];
+  #dataDestinations = [];
   #sourcedBoardTrips = [];
 
   constructor(boardContainer, tripsModel) {
@@ -36,17 +37,18 @@ export default class TripPresenter {
   init = () => {
     this.#dataTrips = [...this.#tripsModel.trips];
     this.#dataOffers = [...this.#tripsModel.offers];
+    this.#dataDestinations = [...this.#tripsModel.destinations];
 
     this.#sourcedBoardTrips = [...this.#tripsModel.trips];
 
     this.#renderBoard();
   };
 
-  #renderTrip = (point, offers) => {
+  #renderTrip = (point, offers, destinations) => {
     const tripPointPresenter = new TripPointPresenter(
       this.#tripListComponent.element, this.#handleTripChange, this.#handleModeChange
     );
-    tripPointPresenter.init(point, offers);
+    tripPointPresenter.init(point, offers, destinations);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
   };
 
@@ -71,21 +73,21 @@ export default class TripPresenter {
   };
 
   #renderSort = () => {
-    render(this.#sortingComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#sortingComponent, this.#boardContainer);
     this.#sortingComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderTrips = () => {
-    this.#dataTrips.forEach((trip, i) => this.#renderTrip(trip, this.#dataOffers[i]));
+    this.#dataTrips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers, this.#dataDestinations));
   };
 
   #renderTripList = () => {
-    render(this.#tripListComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#tripListComponent, this.#boardContainer);
     this.#renderTrips();
   };
 
   #renderNoTrip = () => {
-    render(this.#noTripComponent, this.#boardContainer, RenderPosition.BEFOREEND);
+    render(this.#noTripComponent, this.#boardContainer);
   };
 
   #renderBoard = () => {
