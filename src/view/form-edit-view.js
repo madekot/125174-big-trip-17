@@ -412,12 +412,12 @@ export default class FormEditView extends AbstractStatefulView {
   };
 
   static parseStateToPoint = (state) => {
-    const convertHumanizeToIsosDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
+    const convertHumanizeToIsoDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
 
     const point = {
       ...state,
-      dateFrom: convertHumanizeToIsosDate(state.dateFrom),
-      dateTo: convertHumanizeToIsosDate(state.dateTo),
+      dateFrom: convertHumanizeToIsoDate(state.dateFrom),
+      dateTo: convertHumanizeToIsoDate(state.dateTo),
       offers: FormEditView.convertOffersToIdList(state.offers),
     };
 
