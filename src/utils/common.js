@@ -74,7 +74,10 @@ const updateItem = (items, update) => {
   ];
 };
 
+const convertHumanizeToIsoDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
+
 export {
+  convertHumanizeToIsoDate,
   getDays,
   getDifferenceMilliseconds,
   getHours,

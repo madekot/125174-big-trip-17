@@ -1,10 +1,19 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
-import { getTextFinalSay, transformFirstLetterWordUppercase, } from '../utils/common';
+
+import {
+  convertHumanizeToIsoDate,
+  getTextFinalSay,
+  transformFirstLetterWordUppercase,
+} from '../utils/common';
+
 import { TYPES, CITY_NAMES } from '../const';
+import flatpickr from 'flatpickr';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 dayjs.extend(customParseFormat);
 
@@ -191,6 +200,8 @@ const createEditForm = (point = {}) => {
   );
 };
 export default class FormEditView extends AbstractStatefulView {
+  #datepickerDateStart = null;
+  #datepickerDateEnd = null;
   #offers = null;
   #destinations = null;
 
@@ -202,6 +213,7 @@ export default class FormEditView extends AbstractStatefulView {
 
     this._state = FormEditView.parsePointToState(point, this.#offers, this.#destinations);
     this.#setInnerHandlers();
+    this.#setDatepicker();
   }
 
   get template() {
@@ -210,8 +222,23 @@ export default class FormEditView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setDatepicker();
     this.setEditClickHandler(this._callback.click);
     this.setFormSubmitHandler(this._callback.submit);
+  };
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepickerDateStart) {
+      this.#datepickerDateStart.destroy();
+      this.#datepickerDateStart = null;
+    }
+
+    if (this.#datepickerDateEnd) {
+      this.#datepickerDateEnd.destroy();
+      this.#datepickerDateEnd = null;
+    }
   };
 
   reset = (point) => {
@@ -241,18 +268,40 @@ export default class FormEditView extends AbstractStatefulView {
       .addEventListener('click', this.#deleteClickHandler);
   };
 
+  #setDatepicker = () => {
+    const defaultSettings  = {
+      enableTime: true,
+      minDate: 'today',
+      dateFormat: 'd/m/y H:i',
+    };
+
+    const startTime  = {
+      defaultDate: convertHumanizeToIsoDate(this._state.dateFrom),
+      onChange: this.#dataStartChangeHandler,
+    };
+
+    this.#datepickerDateStart = flatpickr(
+      this.element.querySelector('[name=event-start-time]'),
+      {...defaultSettings, ...startTime},
+    );
+
+    const endTime  = {
+      defaultDate: convertHumanizeToIsoDate(this._state.dateTo),
+      onChange: this.#dataEndChangeHandler,
+    };
+
+    this.#datepickerDateEnd = flatpickr(
+      this.element.querySelector('[name=event-end-time]'),
+      {...defaultSettings, ...endTime},
+    );
+  };
+
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list')
       .addEventListener('click', this.#changeTypeClickHandler);
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#cityInputHandler);
-
-    this.element.querySelector('#event-start-time-1')
-      .addEventListener('input', this.#dataStartInputHandler);
-
-    this.element.querySelector('#event-end-time-1')
-      .addEventListener('input', this.#dataEndInputHandler);
 
     this.element.querySelector('#event-price-1')
       .addEventListener('input', this.#priceInputHandler);
@@ -321,19 +370,15 @@ export default class FormEditView extends AbstractStatefulView {
     });
   };
 
-  #dataStartInputHandler = (evt) => {
-    evt.preventDefault();
-
+  #dataStartChangeHandler = ([userDate]) => {
     this._setState({
-      dateFrom: evt.target.value,
+      dateFrom: humanizeDate(userDate),
     });
   };
 
-  #dataEndInputHandler = (evt) => {
-    evt.preventDefault();
-
+  #dataEndChangeHandler = ([userDate]) => {
     this._setState({
-      dateTo: evt.target.value,
+      dateTo: humanizeDate(userDate),
     });
   };
 
@@ -412,8 +457,6 @@ export default class FormEditView extends AbstractStatefulView {
   };
 
   static parseStateToPoint = (state) => {
-    const convertHumanizeToIsoDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
-
     const point = {
       ...state,
       dateFrom: convertHumanizeToIsoDate(state.dateFrom),
