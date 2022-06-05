@@ -24,7 +24,7 @@ const createPointTemplate = (point = {}, offers = []) => {
   const getMonthDay = (time) => humanizeDate(time, {type: 'nameMonthNumberedDay'});
   const getTimeDuration = () => getDateDifference({timeStart: point.dateFrom, timeEnd: point.dateTo});
 
-  const basePrice = point.basePrice || 600;
+  const basePrice = point.basePrice ?? 0;
   const dateTitleFromHuman = getMonthDay(point.dateFrom);
   const dateTitleMachine = point.date || '2019-03-18';
   const isFavorite = point.isFavorite ? 'event__favorite-btn--active' : '';

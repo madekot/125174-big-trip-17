@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {SORTING_DEFAULT_LIST, SortType} from '../const';
+import {SORTING_DEFAULT_LIST} from '../const';
 
 const createSortingItem = (sorting = {}) => {
   const name = sorting.name || 'day';
@@ -29,24 +29,33 @@ const createSortingItem = (sorting = {}) => {
   );
 };
 
-const createSortingList = (data) => data.map((item) => createSortingItem(item)).join(' ');
-const setCheckedItem = (arr) => arr.map((item) => (
-  item.sortType === SortType.DEFAULT
-    ? {...item, checked: true}
-    : {...item, checked: false}
-));
+const createSorting = (currentSortType) => {
+  const setCheckedItem = (arr) => arr.map((item) => (
+    item.sortType === currentSortType
+      ? {...item, checked: true}
+      : {...item, checked: false}
+  ));
 
-const sortingList = createSortingList(setCheckedItem(SORTING_DEFAULT_LIST));
+  const createSortingList = (data) => data.map((item) => createSortingItem(item)).join(' ');
+  const sortingList = createSortingList(setCheckedItem(SORTING_DEFAULT_LIST));
 
-const createSorting = () => (
-  `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${sortingList}
-  </form>`
-);
+  return (
+    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+      ${sortingList}
+    </form>`
+  );
+};
 
 export default class SortingView extends AbstractView {
+  #currentSortType = null;
+
+  constructor(currentSortType) {
+    super();
+    this.#currentSortType = currentSortType;
+  }
+
   get template() {
-    return createSorting();
+    return createSorting(this.#currentSortType);
   }
 
   setSortTypeChangeHandler = (callback) => {

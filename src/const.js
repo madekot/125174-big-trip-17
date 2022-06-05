@@ -10,6 +10,24 @@ const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
 
+const UserAction = {
+  UPDATE_TRIP: 'UPDATE_TRIP',
+  ADD_TRIP: 'ADD_TRIP',
+  DELETE_TRIP: 'DELETE_TRIP',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
 const timestamp = {
   HOUR: 3600000,
   DAY: 86400000,
@@ -26,12 +44,6 @@ const SortType = {
   PRICE: 'price',
   TIME: 'time',
 };
-
-const FILTER_DEFAULT = [
-  {name: 'everything', checked: true ,},
-  {name: 'future'    , checked: false,},
-  {name: 'past'      , checked: false,},
-];
 
 const TYPES = [
   'taxi',
@@ -124,7 +136,8 @@ export {
   CITY_NAMES,
   CITY_PICTURES,
   DURATION_MAX_MINUTES_TRIP,
-  FILTER_DEFAULT,
+  DURATION_MIN_MINUTES_TRIP,
+  FilterType,
   HOURS_IN_DAY,
   ID_DEFAULT_LIST,
   MILLISECONDS_IN_SECOND,
@@ -138,6 +151,7 @@ export {
   SORTING_DEFAULT_LIST,
   SortType,
   TYPES,
+  UpdateType,
+  UserAction,
   timestamp,
-  DURATION_MIN_MINUTES_TRIP,
 };
