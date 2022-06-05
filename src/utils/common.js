@@ -60,24 +60,17 @@ const getDifferenceMilliseconds = ({timeStart, timeEnd}) => (
   dayjs(timeEnd).diff(dayjs(timeStart))
 );
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const convertHumanizeToIsoDate = (date) => dayjs(date, 'DD/MM/YY HH:mm').toISOString();
+
+const deleteObjectProperty = (deleteObj, ...propertyArr) => {
+  for(const property of propertyArr) {
+    delete deleteObj[property];
+  }
+};
 
 export {
   convertHumanizeToIsoDate,
+  deleteObjectProperty,
   getDays,
   getDifferenceMilliseconds,
   getHours,
@@ -89,5 +82,4 @@ export {
   isDoubleDigits,
   makeCounter,
   transformFirstLetterWordUppercase,
-  updateItem,
 };

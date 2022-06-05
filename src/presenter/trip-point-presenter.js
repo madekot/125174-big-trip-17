@@ -1,12 +1,20 @@
 import FormEditView from '../view/form-edit-view';
 import RoutePointView from '../view/route-point-view';
 
+import {humanizeDate} from '../utils/trips';
+import {deleteObjectProperty} from '../utils/common';
+
 import {
   render,
   replace,
   remove,
 } from '../framework/render';
-import {Mode} from '../const';
+
+import {
+  Mode,
+  UpdateType,
+  UserAction,
+} from '../const';
 export default class TripPointPresenter {
   #tripListContainer = null;
 
@@ -41,6 +49,7 @@ export default class TripPointPresenter {
 
     this.#formEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formEditComponent.setEditClickHandler(this.#handleRollClick);
+    this.#formEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevTripPointComponent === null || prevFormEditComponent === null) {
       render(this.#tripPointComponent, this.#tripListContainer);
@@ -84,7 +93,11 @@ export default class TripPointPresenter {
   };
 
   #handleFormSubmit = (trip) => {
-    this.#changeData(trip);
+    this.#changeData(
+      UserAction.UPDATE_TRIP,
+      TripPointPresenter.isMinorUpdate(this.#trip, trip) ? UpdateType.MINOR : UpdateType.PATCH,
+      trip,
+    );
     this.#replaceFormToPoint();
   };
 
@@ -94,7 +107,11 @@ export default class TripPointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#trip, isFavorite: !this.#trip.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_TRIP,
+      UpdateType.MINOR,
+      {...this.#trip, isFavorite: !this.#trip.isFavorite},
+    );
   };
 
   #replaceFormToPoint = () => {
@@ -108,5 +125,31 @@ export default class TripPointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#changeMode();
     this.#mode = Mode.EDITING;
+  };
+
+  #handleDeleteClick = (trip) => {
+    this.#changeData(
+      UserAction.DELETE_TRIP,
+      UpdateType.MINOR,
+      trip,
+    );
+  };
+
+  static isMinorUpdate = (oldTrip, newTrip) => {
+    const cloneOldTrip = {...oldTrip};
+    const cloneNewTrip = {...newTrip};
+
+    const propertyDelete = ['destination', 'offers', 'type'];
+
+    deleteObjectProperty (cloneOldTrip, ...propertyDelete);
+    deleteObjectProperty (cloneNewTrip, ...propertyDelete);
+
+    cloneOldTrip.dateFrom = humanizeDate(cloneOldTrip.dateFrom);
+    cloneOldTrip.dateTo = humanizeDate(cloneOldTrip.dateTo);
+
+    cloneNewTrip.dateFrom = humanizeDate(cloneNewTrip.dateFrom);
+    cloneNewTrip.dateTo = humanizeDate(cloneNewTrip.dateTo);
+
+    return JSON.stringify(cloneOldTrip) !== JSON.stringify(cloneNewTrip);
   };
 }

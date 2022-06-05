@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
+import {nanoid} from 'nanoid';
 
 import {
   convertHumanizeToIsoDate,
@@ -98,15 +99,15 @@ const createOfferSection = (offers) => {
   );
 };
 
-const createDestinationList = (cities) => {
-  const citiesTemplate = cities.map((city) =>
-    `<option value="${city}"></option>`
-  ).join(' ');
+const createDestinationList = (cities, selectedName) => {
+  const citiesTemplate = cities.map((city) => {
+    const isSelected = selectedName === city ? 'selected': '';
+
+    return `<option value="${city}" ${isSelected}>${city}</option>`;
+  }).join(' ');
 
   return (`
-    <datalist id="destination-list-1">
-      ${citiesTemplate}
-    </datalist>
+    ${citiesTemplate}
   `);
 };
 
@@ -117,8 +118,8 @@ const createEditForm = (point = {}) => {
   const dateFrom = point.dateFrom;
   const dateTo = point.dateTo;
 
-  const destinationDescription = point.destination?.description || 'Chamonix-Mont-Blanc (usually shortened to Chamonix)';
-  const destinationName = point.destination?.name || 'destination';
+  const destinationDescription = point.destination?.description || '';
+  const destinationName = point.destination?.name || '';
   const offersLabel = point.type || 'flight';
   const type = point.type || 'flight';
   const typeIcon = point.type || 'flight';
@@ -126,7 +127,12 @@ const createEditForm = (point = {}) => {
   const eventTypeItemsTemplate = createEventTypes({typeChecked: type, types: TYPES});
   const picturesTemplate = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
   const offerTemplate = createOfferSection(offers);
-  const destinationListTemplate = createDestinationList(CITY_NAMES);
+  const destinationListTemplate = createDestinationList(CITY_NAMES, destinationName);
+
+  const destinationTemplate = destinationDescription
+    ? (`<h3 class="event__section-title  event__section-title--destination">destination</h3>
+      <p class="event__destination-description">${destinationDescription}</p>`)
+    : '';
 
   return(
     `<li class="trip-events__item">
@@ -155,9 +161,18 @@ const createEditForm = (point = {}) => {
               ${offersLabel}
 
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
+            <select
+              class="event__input  event__input--destination"
+              id="event-destination-1"
+              type="text"
+              name="event-destination"
+              value="${destinationName}" list="destination-list-1"
+            >
 
-            ${destinationListTemplate}
+              ${destinationListTemplate}
+
+            </select>
+
 
           </div>
 
@@ -174,7 +189,7 @@ const createEditForm = (point = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -188,8 +203,7 @@ const createEditForm = (point = {}) => {
           ${offerTemplate}
 
           <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">destination</h3>
-            <p class="event__destination-description">${destinationDescription}</p>
+            ${destinationTemplate}
 
             ${picturesTemplate}
 
@@ -199,6 +213,16 @@ const createEditForm = (point = {}) => {
     </li>`
   );
 };
+
+const defaultPoint = {
+  basePrice: 0,
+  dateFrom: dayjs().toISOString(),
+  dateTo: dayjs().add(15, 'minute').toISOString(),
+  id: nanoid(),
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
 export default class FormEditView extends AbstractStatefulView {
   #datepickerDateStart = null;
   #datepickerDateEnd = null;
@@ -207,6 +231,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   constructor(point, offers, destinations) {
     super();
+    point = point ?? defaultPoint;
 
     this.#offers = offers;
     this.#destinations = destinations;
@@ -225,6 +250,7 @@ export default class FormEditView extends AbstractStatefulView {
     this.#setDatepicker();
     this.setEditClickHandler(this._callback.click);
     this.setFormSubmitHandler(this._callback.submit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
   removeElement = () => {
@@ -271,7 +297,7 @@ export default class FormEditView extends AbstractStatefulView {
   #setDatepicker = () => {
     const defaultSettings  = {
       enableTime: true,
-      minDate: 'today',
+      // minDate: 'today',
       dateFormat: 'd/m/y H:i',
     };
 
@@ -322,7 +348,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick();
+    this._callback.deleteClick(FormEditView.parseStateToPoint(this._state));
   };
 
   #changeTypeClickHandler = (evt) => {
@@ -348,12 +374,6 @@ export default class FormEditView extends AbstractStatefulView {
   #cityInputHandler = (evt) => {
     evt.preventDefault();
     const cityName = evt.target.value;
-
-    this._setState({
-      destination: {
-        name: cityName,
-      },
-    });
 
     if (!CITY_NAMES.includes(cityName)) {
       return;
