@@ -6,14 +6,25 @@ import {
 
 import Observable from '../framework/observable.js';
 import {MOCK_QUANTITY} from '../const';
+import {deleteObjectProperty} from '../utils/common';
 
 export default class TripsModel extends Observable {
+  #tripsApiService = null;
   #destinations = Array(MOCK_QUANTITY).fill('').map(
     (el, index) => generateDestination(index)
   );
 
   #trips = Array.from({length: MOCK_QUANTITY}, generatePointLocal);
   #offers = generateOffers();
+
+  constructor(tripsApiService) {
+    super();
+    this.#tripsApiService = tripsApiService;
+
+    this.#tripsApiService.trips.then((trips) => {
+      console.log(trips.map(this.#adaptToClient));
+    });
+  }
 
   get trips() {
     return this.#trips;
@@ -65,5 +76,24 @@ export default class TripsModel extends Observable {
     ];
 
     this._notify(updateType);
+  };
+
+  #adaptToClient = (trip) => {
+    const adaptedTask = {...trip,
+      basePrice: trip['base_price'],
+      dateFrom: trip['date_from'],
+      dateTo: trip['date_to'],
+      isFavorite: trip['is_favorite'],
+    };
+
+    deleteObjectProperty(
+      adaptedTask,
+      'base_price',
+      'date_from',
+      'date_to',
+      'is_favorite'
+    );
+
+    return adaptedTask;
   };
 }

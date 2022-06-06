@@ -7,13 +7,18 @@ import FilterPresenter from './presenter/filter-presenter';
 import TripsModel from './model/trips-model';
 import FilterModel from './model/filter-model';
 
+import TripsApiService from './trips-api-service';
+
+
+const AUTHORIZATION = 'Basic hS2sfS12ccl1sa2j';
+const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 const newTripButtonComponent = new NewTripButtonView();
 
 const filterElement = document.querySelector('.trip-controls__filters');
 const contentElement = document.querySelector('.trip-events');
 const newTripButtonContainer = document.querySelector('.trip-main');
 
-const tripsModel = new TripsModel();
+const tripsModel = new TripsModel(new TripsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 
 const tripsPresenter = new TripPresenter(contentElement, tripsModel, filterModel);
@@ -33,3 +38,4 @@ newTripButtonComponent.setClickHandler(handleNewTaskButtonClick);
 
 filterPresenter.init();
 tripsPresenter.init();
+tripsModel.init();
