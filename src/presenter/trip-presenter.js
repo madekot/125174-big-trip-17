@@ -1,6 +1,7 @@
 import NoTripView from '../view/no-trip-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
+import LoadingView from '../view/loading-view.js';
 
 import TripPointPresenter from './trip-point-presenter';
 import TripNewPresenter from './trip-new-presenter';
@@ -24,12 +25,14 @@ export default class TripPresenter {
   #sortingComponent = null;
   #tripListComponent = new TripListView();
   #noTripComponent = null;
+  #loadingComponent = new LoadingView();
 
   #tripPointPresenter = new Map();
   #tripNewPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   #dataOffers = [];
   #dataDestinations = [];
@@ -122,6 +125,11 @@ export default class TripPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -146,12 +154,21 @@ export default class TripPresenter {
     trips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers, this.#dataDestinations));
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#boardContainer);
+  };
+
   #renderNoTrip = () => {
     this.#noTripComponent = new NoTripView(this.#filterType);
     render(this.#noTripComponent, this.#boardContainer);
   };
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (!this.trips.length) {
       this.#renderNoTrip();
       return;
@@ -168,6 +185,7 @@ export default class TripPresenter {
     this.#tripPointPresenter.clear();
 
     remove(this.#sortingComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noTripComponent) {
       remove(this.#noTripComponent);

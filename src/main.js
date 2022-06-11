@@ -1,14 +1,10 @@
 import {render} from './framework/render';
 import NewTripButtonView from './view/new-trip-button-view';
-
+import TripsApiService from './trips-api-service';
 import TripPresenter from './presenter/trip-presenter';
 import FilterPresenter from './presenter/filter-presenter';
-
 import TripsModel from './model/trips-model';
 import FilterModel from './model/filter-model';
-
-import TripsApiService from './trips-api-service';
-
 
 const AUTHORIZATION = 'Basic hS2sfS12ccl1sa2j';
 const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
@@ -33,9 +29,10 @@ const handleNewTaskButtonClick = () => {
   newTripButtonComponent.element.disabled = true;
 };
 
-render(newTripButtonComponent, newTripButtonContainer);
-newTripButtonComponent.setClickHandler(handleNewTaskButtonClick);
-
 filterPresenter.init();
 tripsPresenter.init();
-tripsModel.init();
+tripsModel.init()
+  .finally(() => {
+    render(newTripButtonComponent, newTripButtonContainer);
+    newTripButtonComponent.setClickHandler(handleNewTaskButtonClick);
+  });

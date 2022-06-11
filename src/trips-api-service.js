@@ -5,14 +5,23 @@ const Method = {
   GET: 'GET',
   PUT: 'PUT',
 };
-
 export default class TripsApiService extends ApiService {
   get trips() {
     return this._load({url: 'points'})
       .then(ApiService.parseResponse);
   }
 
-  updateTask = async (trip) => {
+  get destinations() {
+    return this._load({url: 'destinations'})
+      .then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({url: 'offers'})
+      .then(ApiService.parseResponse);
+  }
+
+  updateTrip = async (trip) => {
     const response = await this._load({
       url: `points/${trip.id}`,
       method: Method.PUT,
@@ -21,7 +30,6 @@ export default class TripsApiService extends ApiService {
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
-
     return parsedResponse;
   };
 
