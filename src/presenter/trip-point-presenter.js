@@ -25,7 +25,7 @@ export default class TripPointPresenter {
   #tripPointComponent = null;
 
   #trip = null;
-  #offers = null;
+
   #mode = Mode.DEFAULT;
 
   constructor(tripListContainer, changeData, changeMode) {
@@ -36,7 +36,6 @@ export default class TripPointPresenter {
 
   init = (trip, offers, destinations) => {
     this.#trip = trip;
-    this.#offers = offers;
 
     const prevTripPointComponent = this.#tripPointComponent;
     const prevFormEditComponent = this.#formEditComponent;
@@ -46,7 +45,6 @@ export default class TripPointPresenter {
 
     this.#tripPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#tripPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-
     this.#formEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formEditComponent.setEditClickHandler(this.#handleRollClick);
     this.#formEditComponent.setDeleteClickHandler(this.#handleDeleteClick);

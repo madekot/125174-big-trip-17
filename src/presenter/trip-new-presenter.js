@@ -60,7 +60,7 @@ export default class TripPointPresenter {
     this.#changeData(
       UserAction.ADD_TRIP,
       UpdateType.MINOR,
-      {id: nanoid(), ...trip},
+      trip,
     );
     this.destroy();
   };

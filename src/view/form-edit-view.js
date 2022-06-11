@@ -8,7 +8,6 @@ import {
   transformFirstLetterWordUppercase,
 } from '../utils/common';
 
-import { TYPES, CITY_NAMES } from '../const';
 import flatpickr from 'flatpickr';
 
 import dayjs from 'dayjs';
@@ -123,11 +122,13 @@ const createEditForm = (point = {}) => {
   const offersLabel = point.type || 'flight';
   const type = point.type || 'flight';
   const typeIcon = point.type || 'flight';
+  const cityNames = point.allDestinations.map((item) => item.name);
+  const typesTravel = point.allOffers.map((item) => item.type);
 
-  const eventTypeItemsTemplate = createEventTypes({typeChecked: type, types: TYPES});
+  const eventTypeItemsTemplate = createEventTypes({typeChecked: type, types: typesTravel});
   const picturesTemplate = point.destination?.pictures ? createPicturesContainer(point.destination.pictures) : '';
   const offerTemplate = createOfferSection(offers);
-  const destinationListTemplate = createDestinationList(CITY_NAMES, destinationName);
+  const destinationListTemplate = createDestinationList(cityNames, destinationName);
 
   const destinationTemplate = destinationDescription
     ? (`<h3 class="event__section-title  event__section-title--destination">destination</h3>
@@ -166,8 +167,10 @@ const createEditForm = (point = {}) => {
               id="event-destination-1"
               type="text"
               name="event-destination"
-              value="${destinationName}" list="destination-list-1"
+              list="destination-list-1"
+              required
             >
+              <option disabled selected value> -- select City -- </option>
 
               ${destinationListTemplate}
 
@@ -189,7 +192,7 @@ const createEditForm = (point = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" min="1">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -231,12 +234,13 @@ export default class FormEditView extends AbstractStatefulView {
 
   constructor(point, offers, destinations) {
     super();
-    point = point ?? defaultPoint;
+    point = point ?? {...defaultPoint, destinations: destinations[0]};
 
     this.#offers = offers;
     this.#destinations = destinations;
 
     this._state = FormEditView.parsePointToState(point, this.#offers, this.#destinations);
+
     this.#setInnerHandlers();
     this.#setDatepicker();
   }
@@ -297,7 +301,7 @@ export default class FormEditView extends AbstractStatefulView {
   #setDatepicker = () => {
     const defaultSettings  = {
       enableTime: true,
-      // minDate: 'today',
+      minDate: 'today',
       dateFormat: 'd/m/y H:i',
     };
 
@@ -333,7 +337,7 @@ export default class FormEditView extends AbstractStatefulView {
       .addEventListener('input', this.#priceInputHandler);
 
     this.element.querySelector('.event__available-offers')
-      .addEventListener('click', this.#offerChangeHandler);
+      ?.addEventListener('click', this.#offerChangeHandler);
   };
 
   #editClickHandler = (evt) => {
@@ -374,10 +378,6 @@ export default class FormEditView extends AbstractStatefulView {
   #cityInputHandler = (evt) => {
     evt.preventDefault();
     const cityName = evt.target.value;
-
-    if (!CITY_NAMES.includes(cityName)) {
-      return;
-    }
 
     const destinationIndex = this._state.allDestinations.map(
       (destination) => destination.name
