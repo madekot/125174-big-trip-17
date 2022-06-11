@@ -54,7 +54,6 @@ export default class TripsModel extends Observable {
     }
 
     try {
-      console.log('тут падает скрипт, если изменить точку маршрута')
       const response = await this.#tripsApiService.updateTrip(update);
       const updatedTrip = this.#adaptToClient(response);
 

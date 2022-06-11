@@ -35,7 +35,7 @@ export default class TripsApiService extends ApiService {
 
   #adaptToServer = (trip) => {
     const adaptedTask = {...trip,
-      'base_price': trip.basePrice,
+      'base_price': Number(trip.basePrice),
       'date_from': trip.dateFrom,
       'date_to': trip.dateTo,
       'is_favorite': trip.isFavorite,
