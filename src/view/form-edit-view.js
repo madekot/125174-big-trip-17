@@ -111,7 +111,6 @@ const createDestinationList = (cities, selectedName) => {
 };
 
 const createEditForm = (point = {}) => {
-  // console.log(point)
   const isDisabled = point.isDisabled ? 'disabled' : '';
   const isVisibleButtonRollup = point.isNewPoint;
 
@@ -232,7 +231,7 @@ const createEditForm = (point = {}) => {
 const newPoint = {
   basePrice: 0,
   dateFrom: dayjs().toISOString(),
-  dateTo: dayjs().add(15, 'minute').toISOString(),
+  dateTo: dayjs().toISOString(),
   isFavorite: false,
   offers: [],
   type: 'taxi',
@@ -313,11 +312,11 @@ export default class FormEditView extends AbstractStatefulView {
   #setDatepicker = () => {
     const defaultSettings  = {
       enableTime: true,
-      minDate: 'today',
       dateFormat: 'd/m/y H:i',
     };
 
     const startTime  = {
+      maxDate: convertHumanizeToIsoDate(this._state.dateTo),
       defaultDate: convertHumanizeToIsoDate(this._state.dateFrom),
       onChange: this.#dataStartChangeHandler,
     };
@@ -328,6 +327,7 @@ export default class FormEditView extends AbstractStatefulView {
     );
 
     const endTime  = {
+      minDate: convertHumanizeToIsoDate(this._state.dateFrom),
       defaultDate: convertHumanizeToIsoDate(this._state.dateTo),
       onChange: this.#dataEndChangeHandler,
     };
