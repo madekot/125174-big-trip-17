@@ -91,6 +91,10 @@ const getDateDifference = (options = {}) => {
   const timeStart = options.timeStart;
   const timeEnd = options.timeEnd;
 
+  if (timeStart === timeEnd) {
+    return '00M';
+  }
+
   const type = getTypeHumanizeDate({timeStart, timeEnd});
   return humanizeDate(getDifferenceMilliseconds({timeStart, timeEnd}), {type});
 };

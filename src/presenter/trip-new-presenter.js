@@ -1,5 +1,4 @@
 import FormEditView from '../view/form-edit-view';
-import {nanoid} from 'nanoid';
 
 import {
   remove,
@@ -17,9 +16,6 @@ export default class TripPointPresenter {
   #changeData = null;
   #formEditComponent = null;
   #destroyCallback = null;
-
-  #trip = null;
-  #offers = null;
 
   constructor(tripListContainer, changeData) {
     this.#tripListContainer = tripListContainer;
@@ -56,13 +52,31 @@ export default class TripPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#formEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
+  };
+
   #handleFormSubmit = (trip) => {
     this.#changeData(
       UserAction.ADD_TRIP,
       UpdateType.MINOR,
-      {id: nanoid(), ...trip},
+      trip,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

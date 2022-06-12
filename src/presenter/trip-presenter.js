@@ -1,3 +1,5 @@
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
+
 import NoTripView from '../view/no-trip-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
@@ -16,8 +18,14 @@ import {
   sortTripTime,
 } from '../utils/trips';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export default class TripPresenter {
   #boardContainer = null;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   #tripsModel = null;
   #filterModel = null;
@@ -33,9 +41,6 @@ export default class TripPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
-
-  #dataOffers = [];
-  #dataDestinations = [];
 
   constructor(boardContainer, tripsModel, filterModel) {
     this.#boardContainer = boardContainer;
@@ -68,28 +73,30 @@ export default class TripPresenter {
     return filteredTrips;
   }
 
-  init = () => {
-    this.#dataOffers = [...this.#tripsModel.offers];
-    this.#dataDestinations = [...this.#tripsModel.destinations];
+  get offers() {
+    return this.#tripsModel.offers;
+  }
 
+  get destinations() {
+    return this.#tripsModel.destinations;
+  }
+
+  init = () => {
     this.#renderBoard();
   };
 
   createTrip = (callback) => {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // console.log(this.#tripsModel.destinations)
-    // console.log(this.#tripsModel.offers)
     this.#tripNewPresenter.init(callback, this.#tripsModel.offers, this.#tripsModel.destinations);
-    // this.#tripNewPresenter.init(callback);
   };
 
-  #renderTrip = (point, offers, destinations) => {
+  #renderTrip = (point) => {
     const tripPointPresenter = new TripPointPresenter(
       this.#tripListComponent.element, this.#handleViewAction, this.#handleModeChange
     );
-    // console.log(destinations)
-    tripPointPresenter.init(point, offers, destinations);
+
+    tripPointPresenter.init(point, this.offers, this.destinations);
     this.#tripPointPresenter.set(point.id, tripPointPresenter);
   };
 
@@ -98,24 +105,45 @@ export default class TripPresenter {
     this.#tripPointPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
-        this.#tripsModel.updateTrip(updateType, update);
+        this.#tripPointPresenter.get(update.id).setSaving();
+        try {
+          await this.#tripsModel.updateTrip(updateType, update);
+        } catch(err) {
+          this.#tripPointPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_TRIP:
-        this.#tripsModel.addTrip(updateType, update);
+        this.#tripNewPresenter.setSaving();
+
+        try {
+          await this.#tripsModel.addTrip(updateType, update);
+          await this.#tripNewPresenter.destroy();
+        } catch(err) {
+          this.#tripNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_TRIP:
-        this.#tripsModel.deleteTrip(updateType, update);
+        this.#tripPointPresenter.get(update.id).setDeleting();
+        try {
+          await this.#tripsModel.deleteTrip(updateType, update);
+        } catch(err) {
+          this.#tripPointPresenter.get(update.id).setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#tripPointPresenter.get(data.id).init(data);
+        this.#tripPointPresenter.get(data.id).init(data, this.offers, this.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -150,8 +178,8 @@ export default class TripPresenter {
     render(this.#sortingComponent, this.#boardContainer);
   };
 
-  #renderTrips = (trips) => {
-    trips.forEach((trip) => this.#renderTrip(trip, this.#dataOffers, this.#dataDestinations));
+  #renderTrips = () => {
+    this.trips.forEach((trip) => this.#renderTrip(trip));
   };
 
   #renderLoading = () => {
@@ -177,7 +205,7 @@ export default class TripPresenter {
     this.#renderSort();
 
     render(this.#tripListComponent, this.#boardContainer);
-    this.#renderTrips(this.trips);
+    this.#renderTrips();
   };
 
   #clearBoard = ({resetSortType = false} = {}) => {

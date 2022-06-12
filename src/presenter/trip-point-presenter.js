@@ -25,7 +25,7 @@ export default class TripPointPresenter {
   #tripPointComponent = null;
 
   #trip = null;
-  #offers = null;
+
   #mode = Mode.DEFAULT;
 
   constructor(tripListContainer, changeData, changeMode) {
@@ -36,7 +36,6 @@ export default class TripPointPresenter {
 
   init = (trip, offers, destinations) => {
     this.#trip = trip;
-    this.#offers = offers;
 
     const prevTripPointComponent = this.#tripPointComponent;
     const prevFormEditComponent = this.#formEditComponent;
@@ -46,7 +45,6 @@ export default class TripPointPresenter {
 
     this.#tripPointComponent.setEditClickHandler(this.#handleEditClick);
     this.#tripPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-
     this.#formEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formEditComponent.setEditClickHandler(this.#handleRollClick);
     this.#formEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
@@ -61,7 +59,8 @@ export default class TripPointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#formEditComponent, prevFormEditComponent);
+      replace(this.#tripPointComponent, prevFormEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevTripPointComponent);
@@ -78,6 +77,41 @@ export default class TripPointPresenter {
       this.#formEditComponent.reset(this.#trip);
       this.#replaceFormToPoint();
     }
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#tripPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
   };
 
   #escKeyDownHandler = (evt) => {
@@ -98,7 +132,6 @@ export default class TripPointPresenter {
       TripPointPresenter.isMinorUpdate(this.#trip, trip) ? UpdateType.MINOR : UpdateType.PATCH,
       trip,
     );
-    this.#replaceFormToPoint();
   };
 
   #handleRollClick = () => {
