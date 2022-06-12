@@ -6,7 +6,7 @@ import FilterPresenter from './presenter/filter-presenter';
 import TripsModel from './model/trips-model';
 import FilterModel from './model/filter-model';
 
-const AUTHORIZATION = 'Basic hS2sfS12ccl1sa2j';
+const AUTHORIZATION = 'Basic hS2sfS12ccl1aa2j';
 const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 const newTripButtonComponent = new NewTripButtonView();
 

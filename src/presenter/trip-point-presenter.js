@@ -59,7 +59,8 @@ export default class TripPointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#formEditComponent, prevFormEditComponent);
+      replace(this.#tripPointComponent, prevFormEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevTripPointComponent);
@@ -76,6 +77,41 @@ export default class TripPointPresenter {
       this.#formEditComponent.reset(this.#trip);
       this.#replaceFormToPoint();
     }
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#tripPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
   };
 
   #escKeyDownHandler = (evt) => {
@@ -96,7 +132,6 @@ export default class TripPointPresenter {
       TripPointPresenter.isMinorUpdate(this.#trip, trip) ? UpdateType.MINOR : UpdateType.PATCH,
       trip,
     );
-    this.#replaceFormToPoint();
   };
 
   #handleRollClick = () => {

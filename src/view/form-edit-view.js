@@ -1,6 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
-import {nanoid} from 'nanoid';
 
 import {
   convertHumanizeToIsoDate,
@@ -63,10 +62,11 @@ const createOfferSelectorItem = (offer = {}) => {
   const name = getTextFinalSay(offer.title);
   const price = offer.price;
   const title = offer.title;
+  const isDisabled = offer.isDisabled ? 'disabled' : '';
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}" ${isChecked}>
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}" ${isChecked} ${isDisabled}>
       <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
@@ -111,8 +111,19 @@ const createDestinationList = (cities, selectedName) => {
 };
 
 const createEditForm = (point = {}) => {
+  // console.log(point)
+  const isDisabled = point.isDisabled ? 'disabled' : '';
+  const isVisibleButtonRollup = point.isNewPoint;
+
+  let textButtonReset = point.isNewPoint ? 'Cancel' : 'Delete';
+  if (point.isDeleting) {
+    textButtonReset = 'Deleting...';
+  }
+
+  const textButtonSubmit = point.isSaving ? 'Saving...' : 'Save';
+
   const basePrice = point.basePrice || 0;
-  const offers = point.offers?.length ? point.offers : [];
+  const offers = point.offers?.length ? point.offers.map((item) => ({...item, isDisabled})) : [];
 
   const dateFrom = point.dateFrom;
   const dateTo = point.dateTo;
@@ -144,7 +155,7 @@ const createEditForm = (point = {}) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${typeIcon}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled}>
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -169,6 +180,7 @@ const createEditForm = (point = {}) => {
               name="event-destination"
               list="destination-list-1"
               required
+              ${isDisabled}
             >
               <option disabled selected value> -- select City -- </option>
 
@@ -181,10 +193,10 @@ const createEditForm = (point = {}) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}" ${isDisabled}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}" ${isDisabled}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -192,12 +204,12 @@ const createEditForm = (point = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" min="1">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" min="1" ${isDisabled}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled}>${textButtonSubmit}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled}>${textButtonReset}</button>
+          <button class="event__rollup-btn" type="button" ${isVisibleButtonRollup ? 'style=display:none': ''} ${isDisabled}>
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
@@ -217,14 +229,14 @@ const createEditForm = (point = {}) => {
   );
 };
 
-const defaultPoint = {
+const newPoint = {
   basePrice: 0,
   dateFrom: dayjs().toISOString(),
   dateTo: dayjs().add(15, 'minute').toISOString(),
-  id: nanoid(),
   isFavorite: false,
   offers: [],
   type: 'taxi',
+  isNewPoint: true,
 };
 export default class FormEditView extends AbstractStatefulView {
   #datepickerDateStart = null;
@@ -234,7 +246,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   constructor(point, offers, destinations) {
     super();
-    point = point ?? {...defaultPoint, destinations: destinations[0]};
+    point = point ?? newPoint;
 
     this.#offers = offers;
     this.#destinations = destinations;
@@ -473,6 +485,9 @@ export default class FormEditView extends AbstractStatefulView {
       dateFrom: humanizeDate(point.dateFrom),
       dateTo: humanizeDate(point.dateTo),
       offers: convertedIdListToOffers,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     });
   };
 
@@ -486,6 +501,10 @@ export default class FormEditView extends AbstractStatefulView {
 
     delete point.allOffers;
     delete point.allDestinations;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+    delete point.isNewPoint;
 
     return point;
   };

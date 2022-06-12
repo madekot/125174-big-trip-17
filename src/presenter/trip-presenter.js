@@ -1,3 +1,5 @@
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
+
 import NoTripView from '../view/no-trip-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
@@ -16,8 +18,14 @@ import {
   sortTripTime,
 } from '../utils/trips';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export default class TripPresenter {
   #boardContainer = null;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   #tripsModel = null;
   #filterModel = null;
@@ -97,18 +105,39 @@ export default class TripPresenter {
     this.#tripPointPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
-        this.#tripsModel.updateTrip(updateType, update);
+        this.#tripPointPresenter.get(update.id).setSaving();
+        try {
+          await this.#tripsModel.updateTrip(updateType, update);
+        } catch(err) {
+          this.#tripPointPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_TRIP:
-        this.#tripsModel.addTrip(updateType, update);
+        this.#tripNewPresenter.setSaving();
+
+        try {
+          await this.#tripsModel.addTrip(updateType, update);
+          await this.#tripNewPresenter.destroy();
+        } catch(err) {
+          this.#tripNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_TRIP:
-        this.#tripsModel.deleteTrip(updateType, update);
+        this.#tripPointPresenter.get(update.id).setDeleting();
+        try {
+          await this.#tripsModel.deleteTrip(updateType, update);
+        } catch(err) {
+          this.#tripPointPresenter.get(update.id).setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
