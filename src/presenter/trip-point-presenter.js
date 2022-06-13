@@ -1,20 +1,9 @@
 import FormEditView from '../view/form-edit-view';
 import RoutePointView from '../view/route-point-view';
-
-import {humanizeDate} from '../utils/trips';
+import {Mode, UpdateType, UserAction} from '../const';
 import {deleteObjectProperty} from '../utils/common';
-
-import {
-  render,
-  replace,
-  remove,
-} from '../framework/render';
-
-import {
-  Mode,
-  UpdateType,
-  UserAction,
-} from '../const';
+import {humanizeDate} from '../utils/trips';
+import {render, replace, remove} from '../framework/render';
 export default class TripPointPresenter {
   #tripListContainer = null;
 

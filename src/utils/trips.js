@@ -1,12 +1,6 @@
 import dayjs from 'dayjs';
-import { generateOffers } from '../mock/trip-mock';
-import { ID_DEFAULT_LIST, timestamp, } from '../const';
-import {
-  getDays,
-  getDifferenceMilliseconds,
-  getHours,
-  isDoubleDigits,
-} from '../utils/common';
+import {Timestamp} from '../const';
+import {getDays, getDifferenceMilliseconds, getHours, isDoubleDigits} from '../utils/common';
 
 const humanizeDate = (time, options = {}) => {
   const type = options.type;
@@ -37,13 +31,13 @@ const humanizeDate = (time, options = {}) => {
 
     case 'dayAndSymbol':
       return isDoubleDigits(days)
-        ? `${days}D` // '22D'
-        : `0${days}D`; // '01D'
+        ? `${days}D`
+        : `0${days}D`;
 
     case 'hoursAndSymbol':
       return isDoubleDigits(hours)
-        ? `${hours}H` // '22H'
-        : `0${hours}H`; // '01H'
+        ? `${hours}H`
+        : `0${hours}H`;
 
     case 'hoursMinuteAndSymbol':
       return (
@@ -76,11 +70,11 @@ const humanizeDate = (time, options = {}) => {
 };
 
 const getTypeHumanizeDate = ({timeStart, timeEnd}) => {
-  if (getDifferenceMilliseconds({timeStart, timeEnd}) < timestamp.HOUR) {
+  if (getDifferenceMilliseconds({timeStart, timeEnd}) < Timestamp.HOUR) {
     return 'minuteAndSymbol';
   }
 
-  if (getDifferenceMilliseconds({timeStart, timeEnd}) < timestamp.DAY) {
+  if (getDifferenceMilliseconds({timeStart, timeEnd}) < Timestamp.DAY) {
     return 'hoursMinuteAndSymbol';
   }
 
@@ -100,10 +94,6 @@ const getDateDifference = (options = {}) => {
 };
 
 const getOffersEqualCurrentType = ({type, offers}) => {
-  if (!offers?.length) {
-    offers = generateOffers();
-  }
-
   for (const offerItem of offers) {
     if (offerItem.type === type) {
       return {...offerItem};
@@ -112,10 +102,6 @@ const getOffersEqualCurrentType = ({type, offers}) => {
 };
 
 const convertIdToOffers = ({offersList, idList}) => {
-  if (!idList) {
-    idList = ID_DEFAULT_LIST;
-  }
-
   const arrC = [];
 
   offersList.forEach((item) => {

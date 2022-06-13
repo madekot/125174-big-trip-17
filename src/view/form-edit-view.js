@@ -1,18 +1,10 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { humanizeDate, getOffersEqualCurrentType } from '../utils/trips';
-
-import {
-  convertHumanizeToIsoDate,
-  getTextFinalSay,
-  transformFirstLetterWordUppercase,
-} from '../utils/common';
-
-import flatpickr from 'flatpickr';
-
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
 import 'flatpickr/dist/flatpickr.min.css';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import {convertHumanizeToIsoDate, getTextFinalSay, transformFirstLetterWordUppercase} from '../utils/common';
+import {humanizeDate, getOffersEqualCurrentType} from '../utils/trips';
 
 dayjs.extend(customParseFormat);
 

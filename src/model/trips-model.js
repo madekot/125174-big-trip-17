@@ -1,6 +1,5 @@
-import {UpdateType} from '../const.js';
-
 import Observable from '../framework/observable.js';
+import {UpdateType} from '../const.js';
 import {deleteObjectProperty} from '../utils/common';
 
 export default class TripsModel extends Observable {

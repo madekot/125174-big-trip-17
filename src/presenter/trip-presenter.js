@@ -1,22 +1,14 @@
-import UiBlocker from '../framework/ui-blocker/ui-blocker';
-
+import LoadingView from '../view/loading-view.js';
 import NoTripView from '../view/no-trip-view';
 import SortingView from '../view/sorting-view';
 import TripListView from '../view/trip-list-view';
-import LoadingView from '../view/loading-view.js';
-
-import TripPointPresenter from './trip-point-presenter';
 import TripNewPresenter from './trip-new-presenter';
-
-import {render, remove} from '../framework/render';
+import TripPointPresenter from './trip-point-presenter';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 import {SortType, UpdateType, UserAction, FilterType} from '../const';
 import {filter} from '../utils/filter';
-
-import {
-  sortTripDay,
-  sortTripPrice,
-  sortTripTime,
-} from '../utils/trips';
+import {render, remove} from '../framework/render';
+import {sortTripDay, sortTripPrice, sortTripTime} from '../utils/trips';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,

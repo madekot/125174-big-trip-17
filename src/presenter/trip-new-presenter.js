@@ -1,16 +1,6 @@
 import FormEditView from '../view/form-edit-view';
-
-import {
-  remove,
-  render,
-  RenderPosition,
-} from '../framework/render';
-
-import {
-  UpdateType,
-  UserAction,
-} from '../const';
-
+import {RenderPosition, remove, render} from '../framework/render';
+import {UpdateType, UserAction} from '../const';
 export default class TripPointPresenter {
   #tripListContainer = null;
   #changeData = null;
