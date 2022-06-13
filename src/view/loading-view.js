@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view';
 
-const createLoadingViewTemplate = () => (
+const createLoading = () => (
   '<p class="trip-events__msg">Loading...</p>'
 );
 
-export default class NoTripView extends AbstractView {
+export default class LoadingView extends AbstractView {
   get template() {
-    return createLoadingViewTemplate();
+    return createLoading();
   }
 }

@@ -44,6 +44,10 @@ const deleteObjectProperty = (deleteObj, ...propertyArr) => {
   }
 };
 
+const isEscapeKeyCode = (evt) => (
+  evt.key === 'Escape' || evt.key === 'Esc'
+);
+
 export {
   convertHumanizeToIsoDate,
   deleteObjectProperty,
@@ -52,5 +56,6 @@ export {
   getHours,
   getTextFinalSay,
   isDoubleDigits,
+  isEscapeKeyCode,
   transformFirstLetterWordUppercase,
 };

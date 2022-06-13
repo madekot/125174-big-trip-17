@@ -3,6 +3,7 @@ import RoutePointView from '../view/route-point-view';
 import {Mode, UpdateType, UserAction} from '../const';
 import {deleteObjectProperty} from '../utils/common';
 import {humanizeDate} from '../utils/trips';
+import {isEscapeKeyCode} from '../utils/common';
 import {render, replace, remove} from '../framework/render';
 export default class TripPointPresenter {
   #tripListContainer = null;
@@ -104,7 +105,7 @@ export default class TripPointPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscapeKeyCode(evt)) {
       evt.preventDefault();
       this.#formEditComponent.reset(this.#trip);
       this.#replaceFormToPoint();

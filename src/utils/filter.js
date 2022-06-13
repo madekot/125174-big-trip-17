@@ -25,7 +25,7 @@ const isProcessTrip = (trip) => (
   isBeforeStartDate(trip) && isBeforeFinishDate(trip)
 );
 
-const future = (trips) => (
+const getFutureTrips = (trips) => (
   trips.filter((trip) => (
     isStartDateGreaterCurrentDate(trip)
     && !isStartDateSameCurrentDate(trip)
@@ -33,7 +33,7 @@ const future = (trips) => (
   )
 );
 
-const paste = (trips) => (
+const getPasteTrips = (trips) => (
   trips.filter((trip) => (
     isFinishDateGreaterCurrentDate(trip))
     || isProcessTrip(trip)
@@ -42,8 +42,8 @@ const paste = (trips) => (
 
 const filter = {
   [FilterType.EVERYTHING]: (trips) => trips,
-  [FilterType.FUTURE]: future,
-  [FilterType.PAST]: paste,
+  [FilterType.FUTURE]: getFutureTrips,
+  [FilterType.PAST]: getPasteTrips,
 };
 
 export {filter};

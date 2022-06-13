@@ -1,6 +1,8 @@
 import FormEditView from '../view/form-edit-view';
 import {RenderPosition, remove, render} from '../framework/render';
 import {UpdateType, UserAction} from '../const';
+import {isEscapeKeyCode} from '../utils/common';
+
 export default class TripPointPresenter {
   #tripListContainer = null;
   #changeData = null;
@@ -74,7 +76,7 @@ export default class TripPointPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscapeKeyCode(evt)) {
       evt.preventDefault();
       this.destroy();
     }
