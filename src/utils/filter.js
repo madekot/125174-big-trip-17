@@ -33,7 +33,7 @@ const getFutureTrips = (trips) => (
   )
 );
 
-const getPasteTrips = (trips) => (
+const getPastTrips = (trips) => (
   trips.filter((trip) => (
     isFinishDateGreaterCurrentDate(trip))
     || isProcessTrip(trip)
@@ -43,7 +43,7 @@ const getPasteTrips = (trips) => (
 const filter = {
   [FilterType.EVERYTHING]: (trips) => trips,
   [FilterType.FUTURE]: getFutureTrips,
-  [FilterType.PAST]: getPasteTrips,
+  [FilterType.PAST]: getPastTrips,
 };
 
 export {filter};
